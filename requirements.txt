@@ -1,11 +1,11 @@
-google-genai
+google-genai==1.28.*
 matplotlib
 numpy
-openpyxl
 pandas
 plotly
 python-dotenv
 scikit-learn
 scipy
 seaborn
-sentence-transformers
+torch==2.7.*
+tqdm
