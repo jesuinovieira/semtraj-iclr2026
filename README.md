@@ -43,7 +43,8 @@ source .venv/bin/activate  # macOS / Linux
 .venv\Scripts\activate  # Windows
 
 # Install dependencies
-uv pip install -r requirements.txt
+uv pip install -r requirements.txt -r requirements-dev.txt
+pre-commit install
 ```
 
 ## 3. Configure Environment Variables
