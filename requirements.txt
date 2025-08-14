@@ -3,6 +3,7 @@ ipykernel
 ipywidgets
 matplotlib
 numpy
+openpyxl
 pandas
 plotly
 python-dotenv

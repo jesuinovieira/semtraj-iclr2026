@@ -1,5 +1,7 @@
 import time
 from collections import deque
+from typing import Any
+from typing import Callable
 from typing import Protocol
 
 from google import genai
@@ -15,10 +17,10 @@ class _RateLimiter:
     def __init__(self, max_calls: int, period_sec: float):
         self.max_calls = max_calls
         self.period = period_sec
-        self.calls = deque()
+        self.calls: deque[float] = deque()
 
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
+    def __call__(self, func: Callable) -> Callable:
+        def wrapper(*args: tuple, **kwargs: dict) -> Any:
             now = time.monotonic()
 
             # Drop timestamps that are outside the window

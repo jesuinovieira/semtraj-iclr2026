@@ -26,7 +26,8 @@ def _cosine_to_centroid(vectors: torch.Tensor) -> torch.Tensor:
     c_norm = F.normalize(c, p=2, dim=1)  # Keep it on the unit sphere
 
     # 1 − cosine similarity
-    return 1.0 - (v_norm * c_norm).sum(dim=1)  # shape (n,)
+    result: torch.Tensor = 1.0 - (v_norm * c_norm).sum(dim=1)  # shape (n,)
+    return result
 
 
 def compute_distances(

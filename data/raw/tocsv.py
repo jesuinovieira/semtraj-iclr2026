@@ -1,14 +1,15 @@
 # A simple script to convert all .xlsx files of this folder to .csv
 import os
+
 import pandas as pd
 
 
-def xlsx_to_csv(path):
+def xlsx_to_csv(path: str) -> None:
     for filename in os.listdir(path):
         if filename.endswith(".xlsx"):
             src = os.path.join(path, filename)
             df = pd.read_excel(src)
-            
+
             # Convert column names to lowercase
             df.columns = [col.lower() for col in df.columns]
 

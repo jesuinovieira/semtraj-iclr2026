@@ -57,7 +57,7 @@ def torch2str(t: torch.Tensor) -> str:
     Returns:
         Comma-separated string representation.
     """
-    if t is None or pd.isna(t):
+    if t is None:
         return ""
 
     if t.ndim != 1:
@@ -122,6 +122,6 @@ def load(
         if not isinstance(df[col].iloc[0], str):
             raise TypeError(f"Column '{col}' must contain strings: {df[col].dtype}")
 
-        df[col] = df[col].apply(str2torch)
+        df[col] = df[col].apply(str2torch)  # type: ignore
 
     return df
