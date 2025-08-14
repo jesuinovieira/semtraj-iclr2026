@@ -1,0 +1,43 @@
+[tool.black]
+line-length = 88
+
+[tool.flake8]
+max-line-length = 88
+max-complexity = 10
+exclude = ['.venv*', '*.tox']
+extend-ignore = ['W503']
+
+[tool.pytest]
+pythonpath = "src"
+testpaths = "tests"
+
+[tool.mypy]
+mypy_path = "src"
+
+# Disallow untyped definitions and calls
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+
+# None and optional handling
+no_implicit_optional = true
+
+# Configuring warnings
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_redundant_casts = true
+
+# Misc things
+strict_equality = true
+
+# Config file
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+    "torchvision.*",
+]

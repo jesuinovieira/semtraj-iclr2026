@@ -1,0 +1,11 @@
+google-genai
+matplotlib
+numpy
+openpyxl
+pandas
+plotly
+python-dotenv
+scikit-learn
+scipy
+seaborn
+sentence-transformers

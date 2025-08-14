@@ -1,0 +1,69 @@
+# To install pre-commit: `pip install pre-commit`
+# To set up the git hook scripts: `pre-commit install`
+# To apply the hooks to all files: `pre-commit run --all-files`
+# To update your hooks to the latest version: `pre-commit autoupdate`
+# To disable hooks: `git commit -m "foo" --no-verify`
+#
+# Documentation: https://pre-commit.com/
+# Tools & best practices for code quality: https://realpython.com/python-code-quality/
+
+# Add the folders to be ignored between ^() and separate them with |, for ex:
+exclude: ^(docs/)
+
+repos:
+-   repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
+    rev: v0.8.0
+    hooks:
+    -   id: pre-commit-update
+
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+    -   id: check-executables-have-shebangs
+    -   id: check-json
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: requirements-txt-fixer
+    -   id: trailing-whitespace
+
+-   repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.15.0
+    hooks:
+    -   id: reorder-python-imports
+        args: [--application-directories, "src"]
+
+-   repo: https://github.com/myint/docformatter
+    rev: v1.7.7
+    hooks:
+    -   id: docformatter
+        args: [--in-place, --wrap-summaries, "88", --wrap-descriptions, "88"]
+
+-   repo: https://github.com/asottile/blacken-docs
+    rev: 1.19.1
+    hooks:
+    -   id: blacken-docs
+
+-   repo: https://github.com/ambv/black
+    rev: 25.1.0
+    hooks:
+    -   id: black
+        language_version: python3.11
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.9
+    hooks:
+    -   id: ruff
+    -   id: ruff-format
+
+-   repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.9.1
+    hooks:
+    -   id: nbqa-black
+        args: [--line-length=88]
+        additional_dependencies: [black]
+        files: \.ipynb$
+
+-   repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+    -   id: nbstripout
