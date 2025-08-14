@@ -1,4 +1,6 @@
 google-genai==1.28.*
+ipykernel
+ipywidgets
 matplotlib
 numpy
 pandas

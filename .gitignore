@@ -186,3 +186,5 @@ temp/
 data/
 results/
 .ruff_cache/
+!data/raw/.gitkeep
+!data/raw/tocsv.py
