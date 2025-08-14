@@ -48,9 +48,6 @@ def compute_distances(
 
     # TODO: enhance name or split into multiple functions
     """
-    if group.empty:
-        return group
-
     embeddings = torch.stack(group["embedding"].tolist())
     normed = F.normalize(embeddings, p=2, dim=1)
 

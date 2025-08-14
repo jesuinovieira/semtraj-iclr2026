@@ -57,7 +57,7 @@ def torch2str(t: torch.Tensor) -> str:
     Returns:
         Comma-separated string representation.
     """
-    if t is None:
+    if t is None or pd.isna(t):  # type: ignore
         return ""
 
     if t.ndim != 1:
