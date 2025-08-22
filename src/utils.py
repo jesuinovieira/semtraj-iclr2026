@@ -75,6 +75,12 @@ def str2torch(s: str) -> torch.Tensor:
     Returns:
         1D tensor with dtype float32.
     """
+    if s is None or s == "":
+        return torch.tensor([], dtype=torch.float32)
+
+    if isinstance(s, float):
+        return torch.tensor([s], dtype=torch.float32)
+
     return torch.tensor([float(v) for v in s.split(",")], dtype=torch.float32)
 
 
