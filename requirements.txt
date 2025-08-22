@@ -1,4 +1,4 @@
-formulaic
+formulaic==1.2.*
 google-genai==1.28.*
 ipykernel
 ipywidgets
@@ -11,7 +11,7 @@ python-dotenv
 scikit-learn
 scipy
 seaborn
-statannotations
-statsmodels
+statannotations==0.7.*
+statsmodels==0.14.*
 torch==2.7.*
 tqdm
