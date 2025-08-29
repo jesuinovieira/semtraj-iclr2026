@@ -13,7 +13,7 @@ def boxplot(df, x, y):
     plt.xticks(rotation=90)
 
 
-def boxplot_with_model(df, metric, title=None):
+def boxplot_with_model(df, metric, title=None, verbose=False):
     """
     - seaborn boxplot + jittered points (single fixed color)
     - black dot + errorbar at model-estimated marginal mean (fixed effects)
@@ -85,7 +85,13 @@ def boxplot_with_model(df, metric, title=None):
     # Significance stars via statannotations (use our Tukey p-values)
     if pair_tuples:
         annotator = statannotations.Annotator.Annotator(
-            ax, pair_tuples, data=df, x="category", y=metric, order=cats, verbose=True
+            ax,
+            pair_tuples,
+            data=df,
+            x="category",
+            y=metric,
+            order=cats,
+            verbose=verbose,
         )
         # NOTE: set pvalue_format to configure significance codes
         annotator.configure(text_format="star", loc="inside", color="#4c4c4c")
