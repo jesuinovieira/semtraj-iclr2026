@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import statannotations.Annotator
 
-import stats
+import rstats
 
 
 def boxplot(df, x, y):
@@ -13,22 +13,46 @@ def boxplot(df, x, y):
     plt.xticks(rotation=90)
 
 
-def boxplot_with_model(df, metric, title=None, verbose=False):
-    """
-    - seaborn boxplot + jittered points (single fixed color)
-    - black dot + errorbar at model-estimated marginal mean (fixed effects)
-    - significance stars from Tukey via statannotations
-    """
-    # 1) Fit model and compute predicted marginal means + CIs
-    res = stats.fit_lmm_category(df, metric)
-    pred = stats.emmeans_like_predictions(res, df, metric)
+def boxplot_glmm(df, metric, title=None, verbose=False):
+    """Make a boxplot of raw data by `category`, overlay model-predicted marginal means
+    with error bars, and annotate Tukey pairwise significance (GLMM fit in R via rpy2).
 
-    # 2) Tukey pairwise on raw data  (expects columns: group1, group2, p.value)
-    pairs = stats.tukey_pairwise(df, metric)
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Input data containing at least [metric, category, id].
+    metric : str
+        Column name of the response variable.
+    title : str, optional
+        Plot title. Defaults to "GLMM estimates & raw spread".
+    verbose : bool, default=False
+        If True, verbose output from statannotations.
+
+    Returns
+    -------
+    res : R model object (lmerMod/glmmTMB)
+    pred : pandas.DataFrame
+        Marginal means per category (from emmeans).
+    pairs : pandas.DataFrame
+        Tukey pairwise contrasts with p-values.
+    """
+    # 1) Fit model in R
+    formula = f"{metric} ~ category + (1|id)"
+    res = rstats.fit_glmm(df, formula, family="gaussian")
+
+    # 2) Marginal means + Tukey
+    pred = rstats.marginal_means_by_category(res, term="category")
+    pairs = rstats.pairwise_tukey(res, term="category")
+
+    # Split contrast string into group1/group2
+    if "contrast" in pairs.columns:
+        pairs[["group1", "group2"]] = pairs["contrast"].str.split(" - ", expand=True)
+
+    # Categories for plotting
     cats = sorted(df["category"].dropna().unique())
     xmap = {c: i for i, c in enumerate(cats)}
 
-    # Sort pairs by span (short → long) so stacking is clean
+    # Pair tuples ordered by span (short → long)
     pair_tuples = [(g1, g2) for g1, g2 in zip(pairs["group1"], pairs["group2"])]
     pair_tuples = sorted(pair_tuples, key=lambda p: abs(xmap[p[1]] - xmap[p[0]]))
     pvalues = [
@@ -36,9 +60,9 @@ def boxplot_with_model(df, metric, title=None, verbose=False):
         for (a, b) in pair_tuples
     ]
 
-    # 3) Plot
+    # --- Plotting ---
     sns.set_style("whitegrid")
-    _, ax = plt.subplots()
+    fig, ax = plt.subplots()
 
     # Boxplot
     sns.boxplot(
@@ -49,9 +73,9 @@ def boxplot_with_model(df, metric, title=None, verbose=False):
         color="#4c4c4c",
         fill=False,
         showcaps=True,
-        ax=ax,
         width=0.5,
         linewidth=2.0,
+        ax=ax,
     )
 
     # Jittered raw points
@@ -67,22 +91,17 @@ def boxplot_with_model(df, metric, title=None, verbose=False):
         ax=ax,
     )
 
-    # Model estimates + CI
-    xmap = {c: i for i, c in enumerate(cats)}
-    for _, r in pred.iterrows():
-        x = xmap[r["x"]]
-        ax.errorbar(
-            x,
-            r["predicted"],
-            yerr=[[r["predicted"] - r["conf.low"]], [r["conf.high"] - r["predicted"]]],
-            fmt="o",
-            elinewidth=2,
-            capsize=6,
-            color="#4c4c4c",
-            zorder=5,
-        )
+    # Model estimates (emm) ± SE
+    ax.errorbar(
+        pred["category"],
+        pred["emmean"],
+        yerr=pred["SE"],
+        fmt="o",
+        color="black",
+        capsize=3,
+    )
 
-    # Significance stars via statannotations (use our Tukey p-values)
+    # Significance stars
     if pair_tuples:
         annotator = statannotations.Annotator.Annotator(
             ax,
@@ -93,17 +112,18 @@ def boxplot_with_model(df, metric, title=None, verbose=False):
             order=cats,
             verbose=verbose,
         )
-        # NOTE: set pvalue_format to configure significance codes
-        annotator.configure(text_format="star", loc="inside", color="#4c4c4c")
+        annotator.configure(
+            text_format="star", hide_non_significant=True, loc="inside", color="#4c4c4c"
+        )
         annotator.set_pvalues(pvalues)
         annotator.annotate()
 
+    # Aesthetics
     sns.despine()
     for spine in ax.spines.values():
         spine.set_linewidth(1.5)
-
     ax.set_title(title or "GLMM estimates & raw spread")
-    ax.set_xlabel("category")
+    ax.set_xlabel("Category")
     ax.set_ylabel(metric)
     ax.grid(True, axis="y", alpha=0.5)
     plt.tight_layout()

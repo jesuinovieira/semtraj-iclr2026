@@ -18,29 +18,28 @@ def mean_sd_by_group(df, group, metric):
     return out.sort_values(group).reset_index(drop=True)
 
 
-def fit_lmm_category(df, metric):
+def fit_lmm(df, metric):
+    """Fits a linear mixed model with category as fixed effect and concept as random
+    effect: metric ~ C(category) + (1|id) + (1|concept)
     """
-    Fit LMM: metric ~ C(category) + (1|id) + (1|concept)
-    Using statsmodels MixedLM with variance components for concept.
-    """
-    # Keep only the columns the model will use, drop NAs, reset index
+    # Keep only necessary columns, drop rows with NA on any of them
     cols = ["id", "category", "concept", metric]
     df = df.loc[:, cols].dropna().reset_index(drop=True).copy()
 
-    # MixedLM supports one 'groups'; we use id as groups,
-    # and add concept as an additional variance component via vc_formula.
+    # MixedLM: one primary grouping (id) + variance component per concept
     md = sm.MixedLM.from_formula(
         f"{metric} ~ C(category)",
         data=df,
         groups=df["id"],
         re_formula="1",
-        vc_formula={"concept": "0 + C(concept)"},
+        vc_formula={"concept": "0 + C(concept)"},  # Random intercept per concept
     )
     res = md.fit(method="lbfgs", maxiter=200, disp=False)
     return res
 
 
-def emmeans_like_predictions(res, d, metric):
+def marginal_means_by_category(res, d, metric):
+    """Compute model-estimated marginal means (like emmeans in R)."""
     # All category levels used in the model
     levels = list(pd.Categorical(d["category"]).categories)
 
