@@ -18,12 +18,15 @@ ensure_pkgs <- function(pkgs) {
 }
 """
 )
-ro.r('ensure_pkgs(c("glmmTMB","lme4","emmeans","DHARMa","pbkrtest","lmerTest"))')
+ro.r('ensure_pkgs(c("glmmTMB","emmeans","DHARMa","pbkrtest","lmerTest"))')
 
 # Now load them
 ro.r(
-    "library(glmmTMB); library(lme4); library(emmeans); library(DHARMa); "
-    "library(pbkrtest); library(lmerTest)"
+    "library(glmmTMB); "
+    "library(emmeans); "
+    "library(DHARMa); "
+    "library(pbkrtest); "
+    "library(lmerTest)"
 )
 
 
@@ -37,53 +40,112 @@ def _r_df_to_py(r_df):
         return ro.conversion.rpy2py(r_df)
 
 
-def fit_glmm(df: pd.DataFrame, formula: str, family: str = "gaussian"):
+def fit_glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
+    """Fit a GLMM with glmmTMB via rpy2.
+
+    Notes
+    -----
+    - Default family is "lognormal" implemented as gaussian(link="log").
+    - For log links, the response must be strictly positive; we do not modify data here.
+      Prefer to pre-clean your data (e.g., add a tiny epsilon) upstream if needed.
+    """
     ro.globalenv["df_py"] = _py_df_to_r(df)
     ro.globalenv["formula_str"] = formula
     ro.globalenv["fam_str"] = family
 
     ro.r(
-        """
-        df <- df_py
+        r"""
+        if (!requireNamespace("glmmTMB", quietly = TRUE)) {
+          stop("Package 'glmmTMB' is not installed. Run install.packages('glmmTMB').")
+        }
+
+        df  <- df_py
         fml <- as.formula(formula_str)
         fam <- fam_str
 
-        if (identical(fam, "gaussian")) {
-          mod <- lme4::lmer(fml, data = df)
-        } else {
-          famobj <- switch(fam,
-            "gamma"     = stats::Gamma(link="log"),
-            "poisson"   = stats::poisson(link="log"),
-            "binomial"  = stats::binomial(),
-            "lognormal" = stats::gaussian(link="log"),
-            stats::gaussian()
-          )
-          mod <- glmmTMB::glmmTMB(formula = fml, data = df, family = famobj)
-        }
-    """
+        # Map our string -> family object
+        famobj <- switch(fam,
+          "gamma"     = stats::Gamma(link = "log"),
+          "poisson"   = stats::poisson(link = "log"),
+          "binomial"  = stats::binomial(),
+          "lognormal" = stats::gaussian(link = "log"),  # lognormal via log link
+          "gaussian"  = stats::gaussian(),
+          stop(paste("Unsupported family:", fam))
+        )
+
+        # NOTE: glmmTMB does not auto-convert character IDs to factors.
+        # If your RHS has (1|id) and id is character/integer, glmmTMB will coerce,
+        # but it's safer to ensure factors in Python beforehand.
+
+        mod <- glmmTMB::glmmTMB(
+          formula = fml,
+          data    = df,
+          family  = famobj
+        )
+
+        # Return via the global env so rpy2 can fetch it
+        assign("mod", mod, envir = .GlobalEnv)
+        """
     )
     return ro.globalenv["mod"]
 
 
 def marginal_means_by_category(mod, term: str = "category") -> pd.DataFrame:
+    """Get marginal means (EMMs) by 'term' on the RESPONSE scale (back-transformed).
+
+    Returns columns 'category' (or your term), 'emmean', 'SE', 'lower.CL', 'upper.CL'.
+    """
     ro.globalenv["mod"] = mod
     ro.globalenv["term_str"] = term
+
     r_df = ro.r(
+        r"""
+        if (!requireNamespace("emmeans", quietly = TRUE)) {
+          stop("Package 'emmeans' is not installed. Run install.packages('emmeans').")
+        }
+
+        term <- term_str
+
+        # type = "response" puts results on the natural scale, with bias correction where relevant
+        emm <- emmeans::emmeans(mod, specs = as.formula(paste("~", term)), type = "response")
+        out <- as.data.frame(emm)
+
+        # Normalize column names: emmeans on response scale yields 'response' not 'emmean'
+        if ("response" %in% names(out)) names(out)[names(out) == "response"] <- "emmean"
+
+        # SE is usually 'SE' already; keep a defensive rename in case a method returns 'SE.df'
+        if (!("SE" %in% names(out)) && ("SE.df" %in% names(out))) {
+          names(out)[names(out) == "SE.df"] <- "SE"
+        }
+
+        # Standardize the term column name to the term string (e.g., 'category')
+        # emmeans typically uses the factor name already, so this is just a sanity pass
+        names(out)[names(out) == names(out)[1]] <- term
+
+        out
         """
-        fml_specs <- as.formula(paste0("~", term_str))
-        as.data.frame(emmeans::emmeans(mod, specs = fml_specs))
-    """
     )
     return _r_df_to_py(r_df)
 
 
 def pairwise_tukey(mod, term: str = "category") -> pd.DataFrame:
+    """Tukey-adjusted pairwise comparisons for 'term'.
+
+    By default, p-values are computed on the linear predictor.
+    """
     ro.globalenv["mod"] = mod
     ro.globalenv["term_str"] = term
+
     r_df = ro.r(
+        r"""
+        if (!requireNamespace("emmeans", quietly = TRUE)) {
+          stop("Package 'emmeans' is not installed. Run install.packages('emmeans').")
+        }
+
+        term <- term_str
+        emm  <- emmeans::emmeans(mod, specs = as.formula(paste("~", term)))
+        pw   <- pairs(emm, adjust = "tukey")
+        as.data.frame(pw)
         """
-        emm <- emmeans::emmeans(mod, specs = term_str)
-        as.data.frame(pairs(emm, adjust = "tukey"))
-    """
     )
     return _r_df_to_py(r_df)

@@ -5,6 +5,7 @@ from typing import Callable
 from typing import Protocol
 
 from google import genai
+from openai import OpenAI
 
 # Default rate limiter config
 _MAX_CALLS = 1500
@@ -76,8 +77,6 @@ class GeminiBackend:
 
 class OpenAIBackend:
     def __init__(self, api_key: str, model: str = "text-embedding-3-large") -> None:
-        from openai import OpenAI
-
         self._client = OpenAI(api_key=api_key)
         self._model = model
 

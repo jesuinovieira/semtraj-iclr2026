@@ -4,6 +4,7 @@ ipykernel
 ipywidgets
 matplotlib
 numpy
+openai==1.107.*
 openpyxl
 pandas
 plotly

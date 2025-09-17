@@ -39,7 +39,7 @@ repos:
         args: [--in-place, --wrap-summaries, "88", --wrap-descriptions, "88"]
 
 -   repo: https://github.com/asottile/blacken-docs
-    rev: 1.19.1
+    rev: 1.20.0
     hooks:
     -   id: blacken-docs
 
@@ -50,7 +50,7 @@ repos:
         language_version: python3.11
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.12
+    rev: v0.13.0
     hooks:
     -   id: ruff
     -   id: ruff-format
