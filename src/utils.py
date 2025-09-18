@@ -76,7 +76,7 @@ def str2torch(s: str) -> torch.Tensor:
         1D tensor with dtype float32.
     """
     if s is None or s == "":
-        return torch.tensor([], dtype=torch.float32)
+        return torch.tensor([float("nan")], dtype=torch.float32)
 
     if isinstance(s, float):
         return torch.tensor([s], dtype=torch.float32)
@@ -122,7 +122,6 @@ def load(
 
     for col in tensor_cols:
         if col not in df.columns:
-            print(f"Column '{col}' not found, skipping conversion to torch.Tensor")
             continue
 
         if not isinstance(df[col].iloc[0], str):

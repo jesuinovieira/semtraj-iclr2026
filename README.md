@@ -17,11 +17,7 @@ TODO: describe columns (standardize: lowercase, in english, underscore for space
 TODO: describe data (any relevant information) and add references
 TODO: if data has additional columns other than standard ones (or if one is missing), mention and describe it here
 
-## UFABC_PLT_combined.xlsx
-
-## CPN120
-
-## ...
+<!-- dados italian, german data, parkinson paper, swear fluency -->
 
 # Getting Started
 

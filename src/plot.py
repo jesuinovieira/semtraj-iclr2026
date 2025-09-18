@@ -31,6 +31,13 @@ def boxplot_glmm(df, metric, family="lognormal", title=None, verbose=False):
     pred = rstats.marginal_means_by_category(res, term="category")
     pairs = rstats.pairwise_tukey(res, term="category")
 
+    # coefs = rstats.fixed_effects_table(res)
+    # ranef = rstats.random_effects_var(res)
+
+    # print(f"{coefs=}")
+    # print(f"{pairs=}")
+    # print(f"{ranef=}")
+
     # Defensive normalize just in case helpers changed; keep plotting code stable
     if "emmean" not in pred and "response" in pred:
         pred = pred.rename(columns={"response": "emmean"})

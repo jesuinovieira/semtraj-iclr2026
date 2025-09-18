@@ -60,8 +60,8 @@ def compute_distances(
     group.loc[group.index[:-1], "distance_next"] = distances
 
     # Metrics: first and second derivatives
-    group["distance_derivative"] = group["distance_next"].diff(-1) * -1
-    group["distance_second_derivative"] = group["distance_derivative"].diff(-1) * -1
+    # group["distance_derivative"] = group["distance_next"].diff(-1) * -1
+    # group["distance_second_derivative"] = group["distance_derivative"].diff(-1) * -1
 
     # Metrics: entropy of median‑split binary series
     valid = group["distance_next"].dropna()

@@ -18,7 +18,7 @@ ensure_pkgs <- function(pkgs) {
 }
 """
 )
-ro.r('ensure_pkgs(c("glmmTMB","emmeans","DHARMa","pbkrtest","lmerTest"))')
+ro.r('ensure_pkgs(c("glmmTMB","emmeans","DHARMa","pbkrtest","lmerTest","broom.mixed"))')
 
 # Now load them
 ro.r(
@@ -26,7 +26,8 @@ ro.r(
     "library(emmeans); "
     "library(DHARMa); "
     "library(pbkrtest); "
-    "library(lmerTest)"
+    "library(lmerTest); "
+    "library(broom.mixed)"
 )
 
 
@@ -82,6 +83,8 @@ def fit_glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
           data    = df,
           family  = famobj
         )
+
+        print(summary(mod))
 
         # Return via the global env so rpy2 can fetch it
         assign("mod", mod, envir = .GlobalEnv)
@@ -146,6 +149,49 @@ def pairwise_tukey(mod, term: str = "category") -> pd.DataFrame:
         emm  <- emmeans::emmeans(mod, specs = as.formula(paste("~", term)))
         pw   <- pairs(emm, adjust = "tukey")
         as.data.frame(pw)
+        """
+    )
+    return _r_df_to_py(r_df)
+
+
+def fixed_effects_table(mod, conf_level: float = 0.95) -> pd.DataFrame:
+    """Return fixed-effect coefficients on the *link* scale with SE, z/t, p, and CIs."""
+    ro.globalenv["mod"] = mod
+    ro.globalenv["conf_level"] = conf_level
+    r_df = ro.r(
+        r"""
+        if (!requireNamespace("broom.mixed", quietly = TRUE)) {
+          stop("Package 'broom.mixed' is not installed. Run install.packages('broom.mixed').")
+        }
+
+        out <- broom.mixed::tidy(
+          mod,
+          effects = "fixed",
+          conf.int = TRUE,
+          conf.level = conf_level
+        )
+
+        # Keep only the usual columns and standardize names a bit
+        out <- out[, c("term","estimate","std.error","statistic","p.value","conf.low","conf.high")]
+        names(out) <- c("term","estimate","SE","stat","p.value","conf.low","conf.high")
+        out
+        """
+    )
+    return _r_df_to_py(r_df)
+
+
+def random_effects_var(mod, conf_level: float = 0.95) -> pd.DataFrame:
+    """Return random-effect variance parameters (SD/Var, correlations if present)."""
+    ro.globalenv["mod"] = mod
+    ro.globalenv["conf_level"] = conf_level
+    r_df = ro.r(
+        r"""
+        if (!requireNamespace("broom.mixed", quietly = TRUE)) {
+          stop("Package 'broom.mixed' is not installed. Run install.packages('broom.mixed').")
+        }
+
+        out <- broom.mixed::tidy(mod, effects = "ran_pars", conf.int = TRUE, conf.level = conf_level)
+        out
         """
     )
     return _r_df_to_py(r_df)
