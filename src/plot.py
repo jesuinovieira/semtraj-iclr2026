@@ -1,3 +1,6 @@
+import contextlib
+import io
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -23,20 +26,15 @@ def boxplot_glmm(df, metric, family="lognormal", title=None, verbose=False):
         ['category', 'emmean', 'SE', 'lower.CL', 'upper.CL', ...]
       - rstats.pairwise_tukey returns a data frame with 'contrast' and 'p.value'
     """
-    # 1) Fit model in R (GLMM)
-    formula = f"{metric} ~ category + (1|id)"
-    res = rstats.fit_glmm(df, formula=formula, family=family)
+    stdout = io.StringIO()
+    with contextlib.redirect_stdout(stdout):
+        # 1) ...
+        formula = f"{metric} ~ category + (1|id)"
+        res = rstats.glmm(df, formula=formula, family=family)
 
-    # 2) Marginal means (on RESPONSE scale) + Tukey pairwise tests
-    pred = rstats.marginal_means_by_category(res, term="category")
-    pairs = rstats.pairwise_tukey(res, term="category")
-
-    # coefs = rstats.fixed_effects_table(res)
-    # ranef = rstats.random_effects_var(res)
-
-    # print(f"{coefs=}")
-    # print(f"{pairs=}")
-    # print(f"{ranef=}")
+        # 2) ...
+        pred = rstats.emmeans(res, term="category")
+        pairs = rstats.pairs(res, term="category")
 
     # Defensive normalize just in case helpers changed; keep plotting code stable
     if "emmean" not in pred and "response" in pred:
@@ -153,4 +151,4 @@ def boxplot_glmm(df, metric, family="lognormal", title=None, verbose=False):
     ax.grid(True, axis="y", alpha=0.5)
     plt.tight_layout()
 
-    return res, pred, pairs
+    return res, pred, pairs, stdout.getvalue()
