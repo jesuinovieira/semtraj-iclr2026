@@ -4,8 +4,11 @@ from typing import Any
 from typing import Callable
 from typing import Protocol
 
+import torch
 from google import genai
 from openai import OpenAI
+from transformers import AutoModel
+from transformers import AutoTokenizer
 
 # Default rate limiter config
 _MAX_CALLS = 1500
@@ -86,6 +89,33 @@ class OpenAIBackend:
         return [d.embedding for d in resp.data]
 
 
+class QwenLocalBackend:
+    def __init__(
+        self, model: str = "Qwen/Qwen3-Embedding-0.6B", device: str | None = None
+    ):
+        self._model_name = model
+        self._tokenizer = AutoTokenizer.from_pretrained(model)
+        self._model = AutoModel.from_pretrained(model)
+        if device is None:
+            device = "mps" if torch.backends.mps.is_available() else "cpu"
+        self._device = torch.device(device)
+        self._model.to(self._device).eval()
+
+    @RATE_LIMITER
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        # Simple mean pooling over last_hidden_state
+        batch = self._tokenizer(
+            texts, padding=True, truncation=True, return_tensors="pt"
+        ).to(self._device)
+        with torch.no_grad():
+            out = self._model(**batch).last_hidden_state  # (B, T, H)
+            attn_mask = batch["attention_mask"].unsqueeze(-1)  # (B, T, 1)
+            summed = (out * attn_mask).sum(dim=1)  # (B, H)
+            denom = attn_mask.sum(dim=1).clamp(min=1)  # (B, 1)
+            emb = summed / denom
+        return emb.cpu().tolist()
+
+
 def get(api_key: str, backend: str = "gemini") -> EmbeddingBackend:
     """Factory function to get the appropriate embedding backend."""
     if backend == "gemini":
@@ -93,5 +123,8 @@ def get(api_key: str, backend: str = "gemini") -> EmbeddingBackend:
 
     if backend == "openai":
         return OpenAIBackend(api_key=api_key)
+
+    if backend == "qwen":
+        return QwenLocalBackend()
 
     raise ValueError(f"Unsupported backend: {backend}")
