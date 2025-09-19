@@ -43,100 +43,47 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
 
     ro.r(
         r"""
-        if (!requireNamespace("glmmTMB", quietly = TRUE)) {
-          stop("Package 'glmmTMB' is not installed. Run install.packages('glmmTMB').")
-        }
-
         df <- df_py
         formula <- as.formula(formula_str)
         fam <- family
 
-        # Map our string -> family object
         famobj <- switch(fam,
-          "gamma"     = stats::Gamma(link = "log"),
-          "poisson"   = stats::poisson(link = "log"),
-          "binomial"  = stats::binomial(),
-          "lognormal" = stats::gaussian(link = "log"),  # lognormal via log link
-          "gaussian"  = stats::gaussian(),
+          "lognormal" = glmmTMB::lognormal(),
+          "gaussian" = stats::gaussian(),
           stop(paste("Unsupported family:", fam))
         )
 
-        # NOTE: glmmTMB does not auto-convert character IDs to factors.
-        # If your RHS has (1|id) and id is character/integer, glmmTMB will coerce,
-        # but it's safer to ensure factors in Python beforehand.
-
-        mod <- glmmTMB::glmmTMB(
-          formula = formula,
-          data    = df,
-          family  = famobj
-        )
+        glmm <- glmmTMB::glmmTMB(formula = formula, data = df, family = famobj)
 
         cat("GLMM fitted with glmmTMB\n", strrep("-", 70), "\n\n", sep = "")
-        print(summary(mod))
+        print(summary(glmm))
 
-        # Return via the global env so rpy2 can fetch it
-        assign("mod", mod, envir = .GlobalEnv)
+        glmm
         """
     )
-    return ro.globalenv["mod"]
+    return ro.globalenv["glmm"]
 
 
-def emmeans(mod, term: str = "category") -> pd.DataFrame:
-    ro.globalenv["mod"] = mod
-    ro.globalenv["term_str"] = term
-
+def emmeans(effect: str = "category") -> pd.DataFrame:
+    ro.globalenv["effect_str"] = effect
     r_df = ro.r(
         r"""
-        if (!requireNamespace("emmeans", quietly = TRUE)) {
-          stop("Package 'emmeans' is not installed. Run install.packages('emmeans').")
-        }
+        effect <- effect_str
+        emm <- emmeans::emmeans(glmm, specs = as.formula(paste("~", effect)))
 
-        term <- term_str
-
-        # FIXME: discuss type = "response" (use or not, affects scale on plots). It's
-        # currently being computed twice, here and in function below (double check it)
-
-        # type = "response" puts results on the natural scale, with bias correction where relevant
-        emm <- emmeans::emmeans(mod, specs = as.formula(paste("~", term)), type = "response")
-        out <- as.data.frame(emm)
-
-        # Normalize column names: emmeans on response scale yields 'response' not 'emmean'
-        if ("response" %in% names(out)) names(out)[names(out) == "response"] <- "emmean"
-
-        # SE is usually 'SE' already; keep a defensive rename in case a method returns 'SE.df'
-        if (!("SE" %in% names(out)) && ("SE.df" %in% names(out))) {
-          names(out)[names(out) == "SE.df"] <- "SE"
-        }
-
-        # Standardize the term column name to the term string (e.g., 'category')
-        # emmeans typically uses the factor name already, so this is just a sanity pass
-        names(out)[names(out) == names(out)[1]] <- term
-
+        # Keep emm on link but materialize output on response
+        out <- as.data.frame(emm, type = "response")
         out
         """
     )
     return _r_df_to_py(r_df)
 
 
-def pairs(mod, term: str = "category") -> pd.DataFrame:
-    """Tukey-adjusted pairwise comparisons for 'term'.
-
-    By default, p-values are computed on the linear predictor.
-    """
-    ro.globalenv["mod"] = mod
-    ro.globalenv["term_str"] = term
-
+def pairs() -> pd.DataFrame:
     r_df = ro.r(
         r"""
-        if (!requireNamespace("emmeans", quietly = TRUE)) {
-          stop("Package 'emmeans' is not installed. Run install.packages('emmeans').")
-        }
-
-        term <- term_str
-        emm  <- emmeans::emmeans(mod, specs = as.formula(paste("~", term)))
-        pw   <- pairs(emm, adjust = "tukey")
-
-        cat("\nTukey pairwise comparisons\n")
+        pw <- pairs(emm, adjust = "tukey")
+        cat("\nTukey pairwise comparisons (link scale)\n")
         cat(strrep("-", 70), "\n\n")
         print(pw)
         as.data.frame(pw)

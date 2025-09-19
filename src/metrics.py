@@ -59,11 +59,7 @@ def compute_distances(
     group["distance_next"] = pd.NA
     group.loc[group.index[:-1], "distance_next"] = distances
 
-    # Metrics: first and second derivatives
-    # group["distance_derivative"] = group["distance_next"].diff(-1) * -1
-    # group["distance_second_derivative"] = group["distance_derivative"].diff(-1) * -1
-
-    # Metrics: entropy of median‑split binary series
+    # Metrics: entropy
     valid = group["distance_next"].dropna()
     if len(valid) > 5:
         median_val = valid.median()
@@ -100,7 +96,7 @@ def compute_distances(
 
     # Metric: 2‑D MDS
     n = len(group)
-    group[["MDS1", "MDS2"]] = np.nan  # initialise
+    group[["MDS1", "MDS2"]] = np.nan
 
     mask = np.ones(n, dtype=bool)
     if remove_outliers:

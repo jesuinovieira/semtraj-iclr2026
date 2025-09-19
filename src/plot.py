@@ -9,15 +9,7 @@ import statannotations.Annotator
 import rstats
 
 
-def boxplot(df, x, y):
-    sns.set_style("whitegrid")
-    sns.boxplot(data=df, x=x, y=y, fill=False, color="#4c4c4c", linewidth=2.0)
-    sns.stripplot(data=df, x=x, y=y, jitter=True, color="#4c4c4c", alpha=0.5)
-    sns.despine()
-    plt.xticks(rotation=90)
-
-
-def boxplot_glmm(df, metric, family="lognormal", title=None, verbose=False):
+def boxplot(df, metric, family="lognormal", title=None, verbose=False):
     """Boxplot of raw data + GLMM marginal means (±SE) and Tukey star annotations.
 
     Assumes:
@@ -33,8 +25,8 @@ def boxplot_glmm(df, metric, family="lognormal", title=None, verbose=False):
         res = rstats.glmm(df, formula=formula, family=family)
 
         # 2) ...
-        pred = rstats.emmeans(res, term="category")
-        pairs = rstats.pairs(res, term="category")
+        pred = rstats.emmeans(effect="category")
+        pairs = rstats.pairs()
 
     # Defensive normalize just in case helpers changed; keep plotting code stable
     if "emmean" not in pred and "response" in pred:
