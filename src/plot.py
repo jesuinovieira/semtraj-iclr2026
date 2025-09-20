@@ -20,15 +20,15 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
     """
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
-        # 1) ...
+        # 1) Fit GLMM with random intercepts for 'id' and fixed effect of 'category'
         formula = f"{metric} ~ category + (1|id)"
         res = rstats.glmm(df, formula=formula, family=family)
 
-        # 2) ...
+        # 2) Get marginal means and pairwise comparisons
         pred = rstats.emmeans(effect="category")
         pairs = rstats.pairs()
 
-    # Defensive normalize just in case helpers changed; keep plotting code stable
+    # Standardize column names for EMMs
     if "emmean" not in pred and "response" in pred:
         pred = pred.rename(columns={"response": "emmean"})
     if "SE" not in pred and "SE.df" in pred:
@@ -69,6 +69,8 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
 
     # 4) Plot
     sns.set_style("whitegrid")
+    plt.rcParams["font.family"] = "sans-serif"
+    plt.rcParams["font.sans-serif"] = ["Arial"]
     fig, ax = plt.subplots()
 
     # Boxplot of raw data (same order as cats)
@@ -81,26 +83,27 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         fill=False,
         showcaps=True,
         width=0.5,
-        linewidth=1.75,
+        linewidth=1.25,
         showfliers=False,
         ax=ax,
+        zorder=1,  # Above raw points
     )
 
-    # Jittered raw points (helps visualize within-group spread)
+    # Jittered raw points
     sns.stripplot(
         data=df,
         x="category",
         y=metric,
         order=cats,
         color="#4c4c4c",
-        alpha=0.4,
+        alpha=0.25,
         jitter=True,
         size=3,
         ax=ax,
         zorder=1,
     )
 
-    # Model estimates (EMMs) ± SE (on RESPONSE scale!)
+    # Model estimates (EMMs) ± SE
     xpos = [xmap[c] for c in pred["category"]]
     ax.errorbar(
         xpos,
@@ -109,6 +112,9 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         fmt="o",
         color="black",
         capsize=5,
+        capthick=1.5,
+        markersize=5,
+        linewidth=1.5,
         zorder=3,  # Above raw points
     )
 
@@ -126,20 +132,19 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         annotator.configure(
             text_format="star",
             hide_non_significant=True,
-            loc="inside",
-            color="#4c4c4c",
+            loc="outside",
+            color="black",
+            line_width=0.75,
+            fontsize=10,
         )
         annotator.set_pvalues(pvalues)
         annotator.annotate()
 
     # 5) Aesthetics
 
-    sns.despine()
-    for spine in ax.spines.values():
-        spine.set_linewidth(1.5)
-    ax.set_title(title or "GLMM estimates & raw spread")
-    ax.set_xlabel("Category")
-    ax.set_ylabel(metric)
+    sns.despine(top=True, right=True, left=True, bottom=True)
+    ax.set_xlabel("")
+    ax.set_ylabel(metric, fontsize=12)
     ax.grid(True, axis="y", alpha=0.5)
     plt.tight_layout()
 

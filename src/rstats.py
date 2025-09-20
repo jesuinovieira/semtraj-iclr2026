@@ -41,7 +41,7 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
     ro.globalenv["formula_str"] = formula
     ro.globalenv["family"] = family
 
-    ro.r(
+    model = ro.r(
         r"""
         df <- df_py
         formula <- as.formula(formula_str)
@@ -53,6 +53,7 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
           stop(paste("Unsupported family:", fam))
         )
 
+        # Fit the model
         glmm <- glmmTMB::glmmTMB(formula = formula, data = df, family = famobj)
 
         cat("GLMM fitted with glmmTMB\n", strrep("-", 70), "\n\n", sep = "")
@@ -61,13 +62,17 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
         glmm
         """
     )
-    return ro.globalenv["glmm"]
+    return model
 
 
 def emmeans(effect: str = "category") -> pd.DataFrame:
     ro.globalenv["effect_str"] = effect
     r_df = ro.r(
         r"""
+        # Sanity check
+        if (!exists("glmm", envir = .GlobalEnv)) stop("`glmm` not found")
+
+        # Get estimated marginal means
         effect <- effect_str
         emm <- emmeans::emmeans(glmm, specs = as.formula(paste("~", effect)))
 
@@ -82,7 +87,12 @@ def emmeans(effect: str = "category") -> pd.DataFrame:
 def pairs() -> pd.DataFrame:
     r_df = ro.r(
         r"""
+        # Sanity check
+        if (!exists("emm", envir = .GlobalEnv)) stop("`emm` not found")
+
+        # Pairwise comparisons with Tukey adjustment
         pw <- pairs(emm, adjust = "tukey")
+
         cat("\nTukey pairwise comparisons (link scale)\n")
         cat(strrep("-", 70), "\n\n")
         print(pw)
