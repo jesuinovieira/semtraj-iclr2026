@@ -1,8 +1,7 @@
 import pandas as pd
 import rpy2.robjects as ro
-from rpy2.robjects import default_converter
+from rpy2.robjects import conversion as cv
 from rpy2.robjects import pandas2ri
-from rpy2.robjects.conversion import localconverter
 
 # Ensure needed R packages are installed (quiet, no spam)
 ro.r(
@@ -22,13 +21,13 @@ ro.r(
 
 
 def _py_df_to_r(df: pd.DataFrame):
-    with localconverter(default_converter + pandas2ri.converter):
-        return ro.conversion.py2rpy(df)
+    with cv.localconverter(cv.get_conversion() + pandas2ri.converter):
+        return cv.py2rpy(df)
 
 
-def _r_df_to_py(r_df):
-    with localconverter(default_converter + pandas2ri.converter):
-        return ro.conversion.rpy2py(r_df)
+def _r_df_to_py(obj):
+    with cv.localconverter(cv.get_conversion() + pandas2ri.converter):
+        return cv.rpy2py(obj)
 
 
 def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):

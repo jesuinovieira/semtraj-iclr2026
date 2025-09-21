@@ -39,7 +39,6 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         pairs[["group1", "group2"]] = pairs["contrast"].str.split(" - ", expand=True)
 
     # 3) Establish a consistent categorical order
-    # Sort categories alphabetically for stability, or pass a custom order if you have one
     cats = sorted(pd.Series(df["category"]).dropna().unique())
     xmap = {c: i for i, c in enumerate(cats)}
 
@@ -81,12 +80,14 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         order=cats,
         color="#4c4c4c",
         fill=False,
+        # palette=palette,
+        # hue="category",
         showcaps=True,
         width=0.5,
         linewidth=1.25,
         showfliers=False,
         ax=ax,
-        zorder=1,  # Above raw points
+        zorder=1,
     )
 
     # Jittered raw points
@@ -141,7 +142,6 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         annotator.annotate()
 
     # 5) Aesthetics
-
     sns.despine(top=True, right=True, left=True, bottom=True)
     ax.set_xlabel("")
     ax.set_ylabel(metric, fontsize=12)
