@@ -1,35 +1,14 @@
-import contextlib
-import io
-
+import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
-import statannotations.Annotator
 
-import rstats
+import mappings
 
 
-def boxplot(df, metric, pred, pairs, ax=None, verbose=False, figsize=(6, 6)):
-    """Boxplot of raw data + GLMM marginal means (±SE) and Tukey star annotations.
-
-    Assumes:
-      - rstats.fit_glmm uses glmmTMB
-      - rstats.marginal_means_by_category returns response-scale EMMs with columns:
-        ['category', 'emmean', 'SE', 'lower.CL', 'upper.CL', ...]
-      - rstats.pairwise_tukey returns a data frame with 'contrast' and 'p.value'
-    """
-    # Standardize column names for EMMs
-    if "emmean" not in pred and "response" in pred:
-        pred = pred.rename(columns={"response": "emmean"})
-    if "SE" not in pred and "SE.df" in pred:
-        pred = pred.rename(columns={"SE.df": "SE"})
-
-    # Split "A - B" contrasts into separate columns for statannotations
-    if "contrast" in pairs.columns and not {"group1", "group2"}.issubset(pairs.columns):
-        pairs[["group1", "group2"]] = pairs["contrast"].str.split(" - ", expand=True)
-
+def boxplot(df, metric, pred, pairs, cats, ax=None, figsize=(6, 6)):
     # Establish a consistent categorical order
-    cats = sorted(pd.Series(df["category"]).dropna().unique())
     xmap = {c: i for i, c in enumerate(cats)}
 
     # Ensure both the raw df and the EMM table use the same categorical order
@@ -41,31 +20,15 @@ def boxplot(df, metric, pred, pairs, ax=None, verbose=False, figsize=(6, 6)):
             pred["category"], categories=cats, ordered=True
         )
 
-    # Build pair tuples in increasing span so brackets don't overlap too much
-    pair_tuples = []
-    if {"group1", "group2"}.issubset(pairs.columns):
-        pair_tuples = [(g1, g2) for g1, g2 in zip(pairs["group1"], pairs["group2"])]
-        pair_tuples = sorted(pair_tuples, key=lambda p: abs(xmap[p[1]] - xmap[p[0]]))
-
-    # Extract p-values in the same order as pair_tuples
-    # pvalues = []
-    # if len(pair_tuples) and "p.value" in pairs.columns:
-    #     pvalues = [
-    #         pairs.loc[(pairs.group1 == a) & (pairs.group2 == b), "p.value"].iloc[0]
-    #         for (a, b) in pair_tuples
-    #         if not pairs.loc[(pairs.group1 == a) & (pairs.group2 == b), "p.value"].empty
-    #     ]
-
-    # 4) Plot
     sns.set_style("whitegrid")
     plt.rcParams["font.family"] = "sans-serif"
     plt.rcParams["font.sans-serif"] = ["Arial"]
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
+        _, ax = plt.subplots(figsize=figsize)
 
-    # palette = sns.color_palette("Set2", n_colors=len(cats))
     palette = sns.color_palette("colorblind", n_colors=len(cats))
+    # palette = sns.color_palette("Set2", n_colors=len(cats))
 
     # Boxplot of raw data (same order as cats)
     # Color the lines instead
@@ -117,28 +80,6 @@ def boxplot(df, metric, pred, pairs, ax=None, verbose=False, figsize=(6, 6)):
         zorder=3,  # Above raw points
     )
 
-    # Significance stars from Tukey-adjusted comparisons
-    # if pair_tuples and len(pvalues) == len(pair_tuples):
-    #     annotator = statannotations.Annotator.Annotator(
-    #         ax,
-    #         pair_tuples,
-    #         data=df,
-    #         x="category",
-    #         y=metric,
-    #         order=cats,
-    #         verbose=verbose,
-    #     )
-    #     annotator.configure(
-    #         text_format="star",
-    #         hide_non_significant=True,
-    #         loc="outside",
-    #         color="black",
-    #         line_width=1.25,
-    #         fontsize=13,
-    #     )
-    #     annotator.set_pvalues(pvalues)
-    #     annotator.annotate()
-
     # 5) Aesthetics
     sns.despine(top=True, right=True, left=True, bottom=True)
     ax.set_xlabel("")
@@ -147,3 +88,68 @@ def boxplot(df, metric, pred, pairs, ax=None, verbose=False, figsize=(6, 6)):
     plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
 
     return ax
+
+
+def heatmap(pairs, cats, ax):
+    # Build a (symmetric) matrix of p-values
+    pmat = pd.DataFrame(1.0, index=cats, columns=cats, dtype=float)
+    for _, row in pairs.iterrows():
+        g1, g2 = str(row["group1"]), str(row["group2"])
+        p = float(row["p.value"])
+        pmat.loc[g1, g2] = p
+        pmat.loc[g2, g1] = p
+
+    np.fill_diagonal(pmat.values, np.nan)
+    mask = np.tril(np.ones_like(pmat, dtype=bool))
+
+    colors = sns.light_palette("seagreen", n_colors=5, reverse=True)
+    colors[-1] = (1, 1, 1)
+    cmap = mcolors.ListedColormap(colors)
+    bounds = [0, 1e-4, 1e-3, 1e-2, 5e-2, 1.0]  # last one is max
+    norm = mcolors.BoundaryNorm(bounds, cmap.N)
+
+    ax.grid(False)
+    hm = sns.heatmap(
+        pmat.astype(float),
+        mask=mask,
+        # TODO: annot directly here with stars?
+        # annot=pmat.map(stars).to_numpy(),
+        cmap=cmap,
+        norm=norm,
+        cbar=False,
+        vmin=0,
+        vmax=1,
+        xticklabels=cats,
+        yticklabels=cats,
+        ax=ax,
+        square=True,
+    )
+
+    ax.tick_params(axis="x", rotation=90)
+    # ax3.xaxis.set_ticks_position("top")
+    # ax3.xaxis.set_label_position("top")
+    # ax3.tick_params(axis="both", which="both", length=0)
+    # for i, label in enumerate(pmat.index):
+    #     ax3.text(i + 0.5, i + 0.5, label, ha="right", va="center")
+
+    ann = pmat.map(mappings.stars)
+    for r in range(len(cats)):
+        for c in range(len(cats)):
+            if r >= c:
+                continue
+
+            s = ann.iat[r, c]
+            if not s:
+                continue
+
+            ax.text(
+                c + 0.5,
+                r + 0.5,
+                s,
+                ha="center",
+                va="center",
+                fontsize=15,
+                color="black",
+            )
+
+    return hm, pmat
