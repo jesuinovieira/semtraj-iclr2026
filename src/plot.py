@@ -9,7 +9,7 @@ import statannotations.Annotator
 import rstats
 
 
-def boxplot(df, metric, family="lognormal", title=None, verbose=False):
+def boxplot(df, metric, pred, pairs, ax=None, verbose=False, figsize=(6, 6)):
     """Boxplot of raw data + GLMM marginal means (±SE) and Tukey star annotations.
 
     Assumes:
@@ -18,16 +18,6 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         ['category', 'emmean', 'SE', 'lower.CL', 'upper.CL', ...]
       - rstats.pairwise_tukey returns a data frame with 'contrast' and 'p.value'
     """
-    stdout = io.StringIO()
-    with contextlib.redirect_stdout(stdout):
-        # 1) Fit GLMM with random intercepts for 'id' and fixed effect of 'category'
-        formula = f"{metric} ~ category + (1|id)"
-        res = rstats.glmm(df, formula=formula, family=family)
-
-        # 2) Get marginal means and pairwise comparisons
-        pred = rstats.emmeans(effect="category")
-        pairs = rstats.pairs()
-
     # Standardize column names for EMMs
     if "emmean" not in pred and "response" in pred:
         pred = pred.rename(columns={"response": "emmean"})
@@ -38,7 +28,7 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
     if "contrast" in pairs.columns and not {"group1", "group2"}.issubset(pairs.columns):
         pairs[["group1", "group2"]] = pairs["contrast"].str.split(" - ", expand=True)
 
-    # 3) Establish a consistent categorical order
+    # Establish a consistent categorical order
     cats = sorted(pd.Series(df["category"]).dropna().unique())
     xmap = {c: i for i, c in enumerate(cats)}
 
@@ -58,21 +48,27 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         pair_tuples = sorted(pair_tuples, key=lambda p: abs(xmap[p[1]] - xmap[p[0]]))
 
     # Extract p-values in the same order as pair_tuples
-    pvalues = []
-    if len(pair_tuples) and "p.value" in pairs.columns:
-        pvalues = [
-            pairs.loc[(pairs.group1 == a) & (pairs.group2 == b), "p.value"].iloc[0]
-            for (a, b) in pair_tuples
-            if not pairs.loc[(pairs.group1 == a) & (pairs.group2 == b), "p.value"].empty
-        ]
+    # pvalues = []
+    # if len(pair_tuples) and "p.value" in pairs.columns:
+    #     pvalues = [
+    #         pairs.loc[(pairs.group1 == a) & (pairs.group2 == b), "p.value"].iloc[0]
+    #         for (a, b) in pair_tuples
+    #         if not pairs.loc[(pairs.group1 == a) & (pairs.group2 == b), "p.value"].empty
+    #     ]
 
     # 4) Plot
     sns.set_style("whitegrid")
     plt.rcParams["font.family"] = "sans-serif"
     plt.rcParams["font.sans-serif"] = ["Arial"]
-    fig, ax = plt.subplots()
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    # palette = sns.color_palette("Set2", n_colors=len(cats))
+    palette = sns.color_palette("colorblind", n_colors=len(cats))
 
     # Boxplot of raw data (same order as cats)
+    # Color the lines instead
     sns.boxplot(
         data=df,
         x="category",
@@ -80,11 +76,11 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         order=cats,
         color="#4c4c4c",
         fill=False,
-        # palette=palette,
-        # hue="category",
-        showcaps=True,
+        palette=palette,
+        hue="category",
+        showcaps=False,
         width=0.5,
-        linewidth=1.25,
+        linewidth=1.75,
         showfliers=False,
         ax=ax,
         zorder=1,
@@ -96,10 +92,12 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
         x="category",
         y=metric,
         order=cats,
-        color="#4c4c4c",
-        alpha=0.25,
+        # color="#4c4c4c",
+        palette=palette,
+        hue="category",
+        alpha=0.15,
         jitter=True,
-        size=3,
+        size=5,
         ax=ax,
         zorder=1,
     )
@@ -120,32 +118,32 @@ def boxplot(df, metric, family="lognormal", title=None, verbose=False):
     )
 
     # Significance stars from Tukey-adjusted comparisons
-    if pair_tuples and len(pvalues) == len(pair_tuples):
-        annotator = statannotations.Annotator.Annotator(
-            ax,
-            pair_tuples,
-            data=df,
-            x="category",
-            y=metric,
-            order=cats,
-            verbose=verbose,
-        )
-        annotator.configure(
-            text_format="star",
-            hide_non_significant=True,
-            loc="outside",
-            color="black",
-            line_width=0.75,
-            fontsize=10,
-        )
-        annotator.set_pvalues(pvalues)
-        annotator.annotate()
+    # if pair_tuples and len(pvalues) == len(pair_tuples):
+    #     annotator = statannotations.Annotator.Annotator(
+    #         ax,
+    #         pair_tuples,
+    #         data=df,
+    #         x="category",
+    #         y=metric,
+    #         order=cats,
+    #         verbose=verbose,
+    #     )
+    #     annotator.configure(
+    #         text_format="star",
+    #         hide_non_significant=True,
+    #         loc="outside",
+    #         color="black",
+    #         line_width=1.25,
+    #         fontsize=13,
+    #     )
+    #     annotator.set_pvalues(pvalues)
+    #     annotator.annotate()
 
     # 5) Aesthetics
     sns.despine(top=True, right=True, left=True, bottom=True)
     ax.set_xlabel("")
-    ax.set_ylabel(metric, fontsize=12)
+    ax.set_ylabel("")
     ax.grid(True, axis="y", alpha=0.5)
-    plt.tight_layout()
+    plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
 
-    return res, pred, pairs, stdout.getvalue()
+    return ax

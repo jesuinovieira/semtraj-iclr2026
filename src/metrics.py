@@ -61,7 +61,7 @@ def compute_distances(
 
     # Metrics: entropy
     valid = group["distance_next"].dropna()
-    if len(valid) > 5:
+    if len(valid) > 3:
         median_val = valid.median()
         binary = (valid > median_val).astype(int)
         p1 = binary.mean()
