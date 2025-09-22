@@ -23,6 +23,7 @@ categories = {
         "ABSTRACT_VERB": "Abstract Verb",
         "CONCRETE_CONCEPT": "Concrete Concept",
         "CONCRETE_VERB": "Concrete Verb",
+        "HAND_VERB": "Hand Verb",
     },
     "Swear_fluency": {
         "ANIMAL": "Animal",
@@ -45,6 +46,7 @@ categories = {
         "implement": "Implement",
         "mammal": "Mammal",
         "vegetable": "Vegetable",
+        "vehicle": "Vehicle",
     },
     "German_data": {
         "bird": "Bird",
@@ -56,6 +58,7 @@ categories = {
         "implement": "Implement",
         "mammal": "Mammal",
         "vegetable": "Vegetable",
+        "vehicle": "Vehicle",
     },
     "Parkinson_paper": {
         "CN": "HC",
