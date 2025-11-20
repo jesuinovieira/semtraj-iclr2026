@@ -48,6 +48,17 @@ def cumulative_concat(properties: pd.Series) -> list[str]:
     return result
 
 
+def get_lang_from_filename(filename: str) -> str:
+    if "Italian" in filename:
+        return "it"
+    if "German" in filename:
+        return "de"
+    if "Parkinson" in filename:
+        return "es"
+
+    return "en"
+
+
 def torch2str(t: torch.Tensor) -> str:
     """Convert a 1D torch.Tensor to a comma-separated string.
 

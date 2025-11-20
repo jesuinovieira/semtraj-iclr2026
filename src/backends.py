@@ -1,9 +1,12 @@
+import os
 import time
 from collections import deque
 from typing import Any
 from typing import Callable
 from typing import Protocol
 
+import gensim.models.fasttext
+import numpy as np
 import torch
 from google import genai
 from openai import OpenAI
@@ -116,7 +119,84 @@ class QwenLocalBackend:
         return emb.cpu().tolist()
 
 
-def get(api_key: str, backend: str = "gemini") -> EmbeddingBackend:
+class Word2VecBackend:
+    def __init__(self, path: str | None = None):
+        if not path:
+            # https://huggingface.co/fse/word2vec-google-news-300
+            here = os.path.dirname(__file__)
+            path = f"{here}/../models/word2vec-google-news-300.model"
+
+        # NOTE: load pretrained model; adjust loader as needed
+        # e.g. Google News: binary=True; for others, maybe False
+        # self.kv = KeyedVectors.load_word2vec_format(model_path, binary=True)
+        self.kv: gensim.models.KeyedVectors = gensim.models.KeyedVectors.load(
+            path, mmap="r"
+        )
+        self.dim = self.kv.vector_size
+
+    def _embed_one(self, text: str) -> list[float]:
+        # NOTE: simple whitespace tokenization; adapt if you have better tokenization
+        tokens = text.split()
+        vecs = [self.kv[tok] for tok in tokens if tok in self.kv]
+
+        # If all tokens OOV, return zero vector (or random, or skip)
+        if not vecs:
+            return np.zeros(self.dim, dtype=np.float32).tolist()
+
+        # Mean pooling over word vectors
+        return np.mean(vecs, axis=0).tolist()
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        return [self._embed_one(t) for t in texts]
+
+
+class FastTextBackend:
+    def __init__(self, lang: str = "en", path: str | None = None):
+        if path is None:
+            here = os.path.dirname(__file__)
+            path = os.path.join(here, "..", "models", f"cc.{lang}.300.bin")
+
+        # Download if not present
+        if not os.path.exists(path):
+            import fasttext.util
+
+            fasttext.util.download_model(lang, if_exists="ignore")
+
+            # Move to desired location
+            src = f"{lang}.300.bin"
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            os.rename(src, path)
+
+        # This loads the full FastText model with subword info
+        self.model = gensim.models.fasttext.load_facebook_model(path)
+
+        # .wv is a KeyedVectors-like interface
+        self.kv: gensim.models.KeyedVectors = self.model.wv
+        self.dim = self.kv.vector_size
+
+    def _embed_one(self, text: str) -> list[float]:
+        # Simple tokenization; you can swap this for a proper tokenizer if needed
+        tokens = text.lower().split()
+
+        vecs = []
+        for tok in tokens:
+            try:
+                # FastText will *construct* a vector for OOV words using subwords
+                vecs.append(self.kv[tok])
+            except KeyError:
+                # Should be rare, but just in case
+                continue
+
+        if not vecs:
+            return np.zeros(self.dim, dtype=np.float32).tolist()
+
+        return np.mean(vecs, axis=0).tolist()
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        return [self._embed_one(t) for t in texts]
+
+
+def get(api_key: str, backend: str = "gemini", lang: str = "en") -> EmbeddingBackend:
     """Factory function to get the appropriate embedding backend."""
     if backend == "gemini":
         return GeminiBackend(api_key=api_key)
@@ -126,5 +206,11 @@ def get(api_key: str, backend: str = "gemini") -> EmbeddingBackend:
 
     if backend == "qwen":
         return QwenLocalBackend()
+
+    if backend == "word2vec":
+        return Word2VecBackend()
+
+    if backend == "fasttext":
+        return FastTextBackend(lang=lang)
 
     raise ValueError(f"Unsupported backend: {backend}")

@@ -20,10 +20,6 @@ def boxplot(df, metric, pred, pairs, cats, ax=None, figsize=(6, 6)):
             pred["category"], categories=cats, ordered=True
         )
 
-    sns.set_style("whitegrid")
-    plt.rcParams["font.family"] = "sans-serif"
-    plt.rcParams["font.sans-serif"] = ["Arial"]
-
     if ax is None:
         _, ax = plt.subplots(figsize=figsize)
 
@@ -85,6 +81,7 @@ def boxplot(df, metric, pred, pairs, cats, ax=None, figsize=(6, 6)):
     ax.set_xlabel("")
     ax.set_ylabel("")
     ax.grid(True, axis="y", alpha=0.5)
+    ax.tick_params(axis="both", which="major")
     plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
 
     return ax
@@ -125,31 +122,33 @@ def heatmap(pairs, cats, ax):
         square=True,
     )
 
+    ax.tick_params(axis="both", which="major")
     ax.tick_params(axis="x", rotation=90)
+
     # ax3.xaxis.set_ticks_position("top")
     # ax3.xaxis.set_label_position("top")
     # ax3.tick_params(axis="both", which="both", length=0)
     # for i, label in enumerate(pmat.index):
     #     ax3.text(i + 0.5, i + 0.5, label, ha="right", va="center")
 
-    ann = pmat.map(mappings.stars)
-    for r in range(len(cats)):
-        for c in range(len(cats)):
-            if r >= c:
-                continue
+    # ann = pmat.map(mappings.stars)
+    # for r in range(len(cats)):
+    #     for c in range(len(cats)):
+    #         if r >= c:
+    #             continue
 
-            s = ann.iat[r, c]
-            if not s:
-                continue
+    #         s = ann.iat[r, c]
+    #         if s == "ns":
+    #             continue
 
-            ax.text(
-                c + 0.5,
-                r + 0.5,
-                s,
-                ha="center",
-                va="center",
-                fontsize=15,
-                color="black",
-            )
+    #         ax.text(
+    #             c + 0.5,
+    #             r + 0.5,
+    #             s,
+    #             ha="center",
+    #             va="center",
+    #             fontsize=15 if len(cats) <= 6 else 10,
+    #             color="black",
+    #         )
 
     return hm, pmat

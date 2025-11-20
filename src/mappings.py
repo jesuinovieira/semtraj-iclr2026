@@ -1,19 +1,19 @@
 import pandas as pd
 
 figsize = {
-    "UFABC_PLT_combined": (6, 8),
-    "Swear_fluency": (6, 10),
-    "CPN120": (4, 8),
-    "Dados_Italian_2": (7, 7),
-    "German_data": (8, 8),
-    "Parkinson_paper": (4, 6),
+    "Swear_fluency": (22, 8),
+    "Dados_Italian_2": (22, 8),
+    "German_data": (22, 8),
+    "Parkinson_paper": (22, 8),
+    "CPN120": (22, 8),
+    "UFABC_PLT_combined": (22, 8),
 }
 
 ylabels = {
     "acc_magnitude": "Acceleration",
     "vel_magnitude": "Velocity",
-    "distance_centroid_static": "Distance to centroid",
-    "distance_next": "Trajectory",
+    "distance_centroid_static": "Distance to Centroid",
+    "distance_next": "Distance to Next",
     "entropy": "Entropy",
 }
 
@@ -30,7 +30,7 @@ categories = {
         "A_LETTER": "Letter A",
         "F_LETTER": "Letter F",
         "S_LETTER": "Letter S",
-        "SWEAR_WORDS": "Swear Words",
+        "SWEAR_WORDS": "Swear W.",
     },
     "CPN120": {
         "ABSTRACT": "Abstract",

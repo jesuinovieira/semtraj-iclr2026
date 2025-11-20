@@ -189,3 +189,4 @@ results/
 !data/raw/.gitkeep
 !data/raw/tocsv.py
 notebooks/executed
+models/

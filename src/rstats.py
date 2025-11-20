@@ -18,6 +18,7 @@ ro.r(
     suppressPackageStartupMessages(library(emmeans))
     """
 )
+SEED = 42
 
 
 def _py_df_to_r(df: pd.DataFrame):
@@ -40,6 +41,7 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
     ro.globalenv["formula_str"] = formula
     ro.globalenv["family"] = family
 
+    ro.r(f"set.seed({SEED})")
     model = ro.r(
         r"""
         df <- df_py
@@ -66,6 +68,7 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
 
 def emmeans(effect: str = "category") -> pd.DataFrame:
     ro.globalenv["effect_str"] = effect
+    ro.r(f"set.seed({SEED})")
     r_df = ro.r(
         r"""
         # Sanity check
@@ -84,6 +87,7 @@ def emmeans(effect: str = "category") -> pd.DataFrame:
 
 
 def pairs() -> pd.DataFrame:
+    ro.r(f"set.seed({SEED})")
     r_df = ro.r(
         r"""
         # Sanity check

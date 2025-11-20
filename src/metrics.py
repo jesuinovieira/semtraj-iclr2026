@@ -30,10 +30,192 @@ def _cosine_to_centroid(vectors: torch.Tensor) -> torch.Tensor:
     return result
 
 
+def _cosine_threshold(normed: torch.Tensor) -> float:
+    """Linz-style subject-specific cutoff δ_p: mean(|cosine|) over all unordered pairs
+    of embeddings in this group.
+
+    normed: (n, dim) L2-normalised embeddings
+    """
+    n = normed.size(0)
+    if n < 2:
+        return float("nan")
+
+    # Pairwise cosine similarities
+    sims = normed @ normed.T  # (n, n), diag == 1
+
+    # Use upper triangle without the diagonal to avoid self-similarity
+    idx = torch.triu_indices(n, n, offset=1)
+    vals = sims[idx[0], idx[1]].abs()
+
+    return vals.mean().item()
+
+
+def _cluster_lengths_and_switches(same_edge: np.ndarray, n_tokens: int):
+    """
+    same_edge: bool array of length n_tokens-1
+        same_edge[i] == True means token i and i+1 are in the same cluster.
+    n_tokens: total number of tokens in the sequence.
+    Returns:
+        cluster_lengths: list of lengths (including singletons)
+        switches: number of between-cluster transitions (Troyer-style)
+    """
+    if n_tokens == 0:
+        return [], 0
+    if n_tokens == 1:
+        return [1], 0
+
+    cluster_lengths = []
+    current_len = 1
+
+    for i in range(n_tokens - 1):
+        if same_edge[i]:
+            current_len += 1
+        else:
+            cluster_lengths.append(current_len)
+            current_len = 1
+
+    cluster_lengths.append(current_len)
+
+    # Switches = number of times we start a new cluster
+    switches = int((~same_edge).sum())
+
+    return cluster_lengths, switches
+
+
+def compute_clusters_chains(group: pd.DataFrame) -> pd.DataFrame:
+    """Linz-style clustering & chaining for one (id, concept) group.
+
+    Adds per-token columns:
+        - cluster_id_chain
+        - cluster_id_cluster
+        - switch_chain  (boolean, True where a switch occurs)
+        - switch_cluster
+
+    And group-level (same value repeated on all rows of the group):
+        - mean_cluster_size_chain
+        - num_switches_chain
+        - mean_cluster_size_cluster
+        - num_switches_cluster
+    """
+    group = group.copy()
+
+    # ------------------------------------------------------------------
+    # Prep
+    # ------------------------------------------------------------------
+    embeddings = torch.stack(group["embedding"].tolist())  # (n, dim)
+    normed = F.normalize(embeddings, p=2, dim=1)
+    n = normed.size(0)
+
+    # Edge case: too few tokens
+    if n < 2:
+        group["cluster_id_chain"] = 1 if n == 1 else pd.NA
+        group["cluster_id_cluster"] = 1 if n == 1 else pd.NA
+        group["switch_chain"] = False
+        group["switch_cluster"] = False
+        group["mean_cluster_size_chain"] = 0.0
+        group["num_switches_chain"] = 0
+        group["mean_cluster_size_cluster"] = 0.0
+        group["num_switches_cluster"] = 0
+        return group
+
+    # ------------------------------------------------------------------
+    # Subject-specific cutoff δ_p
+    # ------------------------------------------------------------------
+    delta = _cosine_threshold(normed)
+
+    # ------------------------------------------------------------------
+    # 1) Chain model (adjacent similarity)
+    # ------------------------------------------------------------------
+    same_chain = np.empty(n - 1, dtype=bool)
+    for i in range(1, n):
+        # once normalized, cosine similarity is just a dot product
+        sim = float((normed[i - 1] * normed[i]).sum())
+        print(f"(chain) {sim=}")
+        same_chain[i - 1] = abs(sim) > delta
+        print(f"{abs(sim)=}, {delta=}, {same_chain[i - 1]=}")
+
+    # Cluster IDs for chain model
+    chain_cluster_id = np.empty(n, dtype=int)
+    current_id = 1
+    chain_cluster_id[0] = current_id
+    for i in range(1, n):
+        if same_chain[i - 1]:
+            chain_cluster_id[i] = current_id
+        else:
+            current_id += 1
+            chain_cluster_id[i] = current_id
+
+    chain_lengths, chain_switches = _cluster_lengths_and_switches(same_chain, n)
+    # Troyer: cluster size counted from the second item
+    chain_lengths_ge2 = [L for L in chain_lengths if L >= 2]
+    if chain_lengths_ge2:
+        mean_chain_size = float(np.mean([L - 1 for L in chain_lengths_ge2]))
+    else:
+        mean_chain_size = 0.0
+
+    # ------------------------------------------------------------------
+    # 2) Cluster model (centroid of current cluster)
+    # ------------------------------------------------------------------
+    same_cluster = np.empty(n - 1, dtype=bool)
+    mu = normed[0].clone()
+    current_len = 1
+
+    for i in range(1, n):
+        # once normalized, cosine similarity is just a dot product
+        sim = float((mu * normed[i]).sum())
+        print(f"(cluster) {sim=}")
+        same = abs(sim) > delta
+        same_cluster[i - 1] = same
+
+        if same:
+            current_len += 1
+            # update centroid of current cluster
+            mu = (mu * (current_len - 1) + normed[i]) / current_len
+        else:
+            # start new cluster
+            current_len = 1
+            mu = normed[i].clone()
+
+    cluster_cluster_id = np.empty(n, dtype=int)
+    current_id = 1
+    cluster_cluster_id[0] = current_id
+    for i in range(1, n):
+        if same_cluster[i - 1]:
+            cluster_cluster_id[i] = current_id
+        else:
+            current_id += 1
+            cluster_cluster_id[i] = current_id
+
+    cluster_lengths, cluster_switches = _cluster_lengths_and_switches(same_cluster, n)
+    cluster_lengths_ge2 = [L for L in cluster_lengths if L >= 2]
+    if cluster_lengths_ge2:
+        mean_cluster_size = float(np.mean([L - 1 for L in cluster_lengths_ge2]))
+    else:
+        mean_cluster_size = 0.0
+
+    # ------------------------------------------------------------------
+    # Write results back into the DataFrame
+    # ------------------------------------------------------------------
+    group["cluster_id_chain"] = chain_cluster_id
+    group["cluster_id_cluster"] = cluster_cluster_id
+
+    # Switch flags: first token can’t be a switch by definition
+    group["switch_chain"] = np.r_[False, ~same_chain]
+    group["switch_cluster"] = np.r_[False, ~same_cluster]
+
+    group["mean_cluster_size_chain"] = mean_chain_size
+    group["num_switches_chain"] = int(chain_switches)
+    group["mean_cluster_size_cluster"] = mean_cluster_size
+    group["num_switches_cluster"] = int(cluster_switches)
+
+    return group
+
+
 def compute_distances(
     group: pd.DataFrame,
     *,
-    add_mds: bool = True,
+    cumulative: bool = True,
+    add_mds: bool = False,
     remove_outliers: bool = False,
     outlier_threshold: float = 1.5,
     min_points: int = 2,
@@ -48,7 +230,8 @@ def compute_distances(
 
     # TODO: enhance name or split into multiple functions
     """
-    embeddings = torch.stack(group["embedding"].tolist())
+    f_embeddings = "embedding" if cumulative else "prop_embedding"
+    embeddings = torch.stack(group[f_embeddings].tolist())
     normed = F.normalize(embeddings, p=2, dim=1)
 
     # Metrics: distance to next
@@ -80,7 +263,7 @@ def compute_distances(
     arr = embeddings.cpu().numpy()
 
     # Metric: distance to order‑centroid (cosine)
-    emb_t = torch.stack(group["embedding"].tolist())  # (n, dim)
+    emb_t = torch.stack(group[f_embeddings].tolist())  # (n, dim)
     group["distance_centroid_order"] = _cosine_to_centroid(emb_t).cpu().numpy()
     arr = embeddings.cpu().numpy()
 
@@ -122,7 +305,7 @@ def compute_distances(
     return group
 
 
-def compute_dynamics(group: pd.DataFrame) -> pd.DataFrame:
+def compute_dynamics(group: pd.DataFrame, cumulative: bool = True) -> pd.DataFrame:
     """Adds velocity and acceleration (vector + magnitude) to each (ID, Concept)
     subgroup.
 
@@ -132,6 +315,8 @@ def compute_dynamics(group: pd.DataFrame) -> pd.DataFrame:
     - Row i gets Velocity; row i also gets Acceleration computed between i → i+1 → i+2.
     - The last row has no velocity; the last two rows have no acceleration.
     """
+    f_embeddings = "embedding" if cumulative else "prop_embedding"
+
     # Pre-allocate new columns
     group = group.copy()
     for col in [
@@ -142,7 +327,7 @@ def compute_dynamics(group: pd.DataFrame) -> pd.DataFrame:
     ]:
         group[col] = pd.NA
 
-    emb = group["embedding"].tolist()
+    emb = group[f_embeddings].tolist()
 
     # Velocity
     vel_vecs = []  # Keep to reuse when computing acceleration
