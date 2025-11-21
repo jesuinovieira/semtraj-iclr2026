@@ -141,3 +141,74 @@ def load(
         df[col] = df[col].apply(str2torch)  # type: ignore
 
     return df
+
+
+def zca_whitened_embeddings(
+    df: pd.DataFrame,
+    emb_col: str = "embedding",
+    new_col: str = "embedding_zca",
+    device: str | None = None,
+    dtype=torch.float32,
+) -> tuple[pd.DataFrame, dict]:
+    """Fit a ZCA-whitening transform on all embeddings in `emb_col` and add a new column
+    `new_col` with the whitened embeddings.
+
+    # TODO: rename and refactor function
+
+    - df[emb_col] is expected to be a Series of 1D torch tensors of shape (d,).
+    - Returns a *copy* of df with the new column, plus a dict containing
+      the mean and whitening matrix so you can reuse them elsewhere.
+    """
+    # 0) Copy to avoid mutating the original df in-place
+    df_out = df.copy()
+
+    # 1) Stack all embeddings into a single tensor (n_samples, d)
+    X_list = df_out[emb_col].tolist()
+    X = torch.stack([x.to(dtype=dtype) for x in X_list], dim=0)
+
+    # 2) Device handling
+    if device is None:
+        device = X.device
+    X = X.to(device)
+
+    # 3) Mean and centering
+    mean = X.mean(dim=0, keepdim=True)  # (1, d)
+    Xc = X - mean  # (n, d)
+
+    # 4) Covariance (d x d)
+    n = Xc.shape[0]
+    cov = (Xc.T @ Xc) / (n - 1)
+
+    # 5) Eigen-decomposition (symmetric)
+    eigvals, eigvecs = torch.linalg.eigh(cov)
+
+    # 6) Sort eigenvalues descending (optional but nice)
+    idx = torch.argsort(eigvals, descending=True)
+    eigvals = eigvals[idx]
+    eigvecs = eigvecs[:, idx]
+
+    eps = eigvals.max() * 1e-5  # 0.00001 × max eigenvalue
+
+    # 7) Build whitening matrix W_ZCA = U Λ^{-1/2} U^T
+    inv_sqrt = torch.diag(1.0 / torch.sqrt(eigvals + eps))
+    W = eigvecs @ inv_sqrt @ eigvecs.T  # (d, d)
+
+    # 8) Apply whitening to all embeddings
+    Z = (X - mean) @ W.T  # (n, d)
+
+    # 9) Put back into DataFrame as torch tensors
+    df_out[new_col] = [z for z in Z]
+
+    # 10) Return df and the transform parameters (for reuse on test data)
+    params = {"mean": mean, "W": W, "device": device, "dtype": dtype}
+
+    # 11) Diagnostics
+    cov_z = (Z.T @ Z) / (n - 1)
+    print(f"Whitened cov diagonal mean (~1): {cov_z.diag().mean():.4f}")
+    print(
+        f"Whitened cov off-diagonal mean (~0): {cov_z.fill_diagonal_(0).abs().mean():.4f}"
+    )
+    print(f"eps used: {eps:.2e}")
+    print(f"n samples: {n}, embedding dim: {X.shape[1]}")
+
+    return df_out, params

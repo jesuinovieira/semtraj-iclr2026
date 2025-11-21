@@ -1,19 +1,19 @@
 import pandas as pd
 
 figsize = {
-    "Swear_fluency": (22, 8),
-    "Dados_Italian_2": (22, 8),
-    "German_data": (22, 8),
-    "Parkinson_paper": (22, 8),
+    "swear-fluency": (22, 8),
+    "italian": (22, 8),
+    "german": (22, 8),
+    "parkinson": (22, 8),
     "CPN120": (22, 8),
     "UFABC_PLT_combined": (22, 8),
 }
 
 ylabels = {
-    "acc_magnitude": "Acceleration",
-    "vel_magnitude": "Velocity",
-    "distance_centroid_static": "Distance to Centroid",
-    "distance_next": "Distance to Next",
+    "acc": "Acceleration",
+    "vel": "Velocity",
+    "d_centroid": "Distance to Centroid",
+    "d_next": "Distance to Next",
     "entropy": "Entropy",
 }
 
@@ -25,7 +25,7 @@ categories = {
         "CONCRETE_VERB": "Concrete Verb",
         "HAND_VERB": "Hand Verb",
     },
-    "Swear_fluency": {
+    "swear-fluency": {
         "ANIMAL": "Animal",
         "A_LETTER": "Letter A",
         "F_LETTER": "Letter F",
@@ -36,7 +36,7 @@ categories = {
         "ABSTRACT": "Abstract",
         "CONCRETE": "Concrete",
     },
-    "Dados_Italian_2": {
+    "italian": {
         "bird": "Bird",
         "bodypart": "Body Part",
         "building": "Building",
@@ -48,7 +48,7 @@ categories = {
         "vegetable": "Vegetable",
         "vehicle": "Vehicle",
     },
-    "German_data": {
+    "german": {
         "bird": "Bird",
         "bodypart": "Body Part",
         "building": "Building",
@@ -60,7 +60,7 @@ categories = {
         "vegetable": "Vegetable",
         "vehicle": "Vehicle",
     },
-    "Parkinson_paper": {
+    "parkinson": {
         "CN": "HC",
         "DF": "bvFTD",
         "PD": "PD",

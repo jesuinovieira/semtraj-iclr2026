@@ -1,10 +1,31 @@
+import os
+
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
 
-import mappings
+# FIXME: must have latex installed in this path, maybe try and catch error
+os.environ["PATH"] += os.pathsep + "/Library/TeX/texbin"
+
+plt.rcParams["text.usetex"] = True
+plt.rcParams["font.family"] = "serif"
+plt.rcParams["font.serif"] = ["Computer Modern Roman"]
+plt.rcParams["figure.dpi"] = 300
+
+base = 12
+plt.rcParams.update(
+    {
+        "font.size": base,
+        "axes.titlesize": base + 3,
+        "axes.labelsize": base + 2,
+        "xtick.labelsize": base,
+        "ytick.labelsize": base,
+        "legend.fontsize": base,
+        "figure.titlesize": base + 5,
+    }
+)
 
 
 def boxplot(df, metric, pred, pairs, cats, ax=None, figsize=(6, 6)):
@@ -124,31 +145,5 @@ def heatmap(pairs, cats, ax):
 
     ax.tick_params(axis="both", which="major")
     ax.tick_params(axis="x", rotation=90)
-
-    # ax3.xaxis.set_ticks_position("top")
-    # ax3.xaxis.set_label_position("top")
-    # ax3.tick_params(axis="both", which="both", length=0)
-    # for i, label in enumerate(pmat.index):
-    #     ax3.text(i + 0.5, i + 0.5, label, ha="right", va="center")
-
-    # ann = pmat.map(mappings.stars)
-    # for r in range(len(cats)):
-    #     for c in range(len(cats)):
-    #         if r >= c:
-    #             continue
-
-    #         s = ann.iat[r, c]
-    #         if s == "ns":
-    #             continue
-
-    #         ax.text(
-    #             c + 0.5,
-    #             r + 0.5,
-    #             s,
-    #             ha="center",
-    #             va="center",
-    #             fontsize=15 if len(cats) <= 6 else 10,
-    #             color="black",
-    #         )
 
     return hm, pmat

@@ -1,5 +1,5 @@
 BACKENDS  = gemini openai qwen
-FILENAMES = UFABC_PLT_combined Swear_fluency CPN120 Dados_Italian_2 German_data Parkinson_paper
+FILENAMES = UFABC_PLT_combined swear-fluency CPN120 italian german parkinson
 
 OUTDIR    = notebooks/executed
 VENV      = .venv
