@@ -77,12 +77,7 @@ def kinematic(group: pd.DataFrame, *, cumulative: bool = True) -> pd.DataFrame:
 
     # Pre-allocate new columns
     group = group.copy()
-    for col in [
-        "vel_vector",
-        "vel",
-        "acc_vector",
-        "acc",
-    ]:
+    for col in ["vel_vector", "vel", "acc_vector", "acc"]:
         group[col] = pd.NA
 
     emb = group[f_embeddings].tolist()

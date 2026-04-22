@@ -1,18 +1,27 @@
-BACKENDS  = gemini openai qwen
-FILENAMES = UFABC_PLT_combined swear-fluency CPN120 italian german parkinson
+BACKENDS  = openai gemini qwen fasttext
+FILENAMES = parkinson swear-fluency italian german
+CUMULATIVES = true false
 
 OUTDIR    = notebooks/executed
 VENV      = .venv
 
 # Notebook paths
-EMBED_NOTEBOOK    = notebooks/01-embed.ipynb
-METRICS_NOTEBOOK  = notebooks/02-metrics.ipynb
-ANALYSIS_NOTEBOOK = notebooks/03-analysis.ipynb
+EMBED_NOTEBOOK    = notebooks/02-embed.ipynb
+METRICS_NOTEBOOK  = notebooks/03-metrics.ipynb
+ANALYSIS_NOTEBOOK = notebooks/04-analysis-boxplots.ipynb
 
 # Targets per notebook
-EMBED_TARGETS    := $(foreach B,$(BACKENDS),$(foreach F,$(FILENAMES),$(OUTDIR)/01-embed_$(B)_$(F).ipynb))
-METRICS_TARGETS  := $(foreach B,$(BACKENDS),$(foreach F,$(FILENAMES),$(OUTDIR)/02-metrics_$(B)_$(F).ipynb))
-ANALYSIS_TARGETS := $(foreach B,$(BACKENDS),$(foreach F,$(FILENAMES),$(OUTDIR)/03-analysis_$(B)_$(F).ipynb))
+EMBED_TARGETS 	 := $(foreach B,$(BACKENDS),\
+						$(foreach F,$(FILENAMES),\
+						$(OUTDIR)/02-embed_$(B)_$(F).ipynb))
+METRICS_TARGETS  := $(foreach C,$(CUMULATIVES),\
+						$(foreach B,$(BACKENDS),\
+						$(foreach F,$(FILENAMES),\
+						$(OUTDIR)/03-metrics_$(C)_$(B)_$(F).ipynb)))
+ANALYSIS_TARGETS := $(foreach C,$(CUMULATIVES),\
+						$(foreach B,$(BACKENDS),\
+						$(foreach F,$(FILENAMES),\
+						$(OUTDIR)/04-analysis-boxplots_$(C)_$(B)_$(F).ipynb)))
 
 # Master targets
 run: embed metrics analysis
@@ -25,42 +34,46 @@ $(OUTDIR):
 	mkdir -p $(OUTDIR)
 
 # Rule for embed
-$(OUTDIR)/01-embed_%.ipynb: $(EMBED_NOTEBOOK) | $(OUTDIR)
+$(OUTDIR)/02-embed_%.ipynb: $(EMBED_NOTEBOOK) | $(OUTDIR)
 	@stem="$*"; \
 	BACKEND="$${stem%%_*}"; \
 	FILENAME="$${stem#*_}"; \
-	echo ">>> Running $< with BACKEND=$${BACKEND} FILENAME=$${FILENAME} -> $@"; \
+	echo ">>> Running $< with BACKEND=$${BACKEND} FILENAME=$${FILENAME}"; \
 	. $(VENV)/bin/activate && \
 	BACKEND="$${BACKEND}" FILENAME="$${FILENAME}" \
 	$(VENV)/bin/jupyter nbconvert --to notebook --execute "$<" \
 		--ExecutePreprocessor.timeout=-1 \
-		--output "01-embed_$${stem}.ipynb" \
+		--output "02-embed_$${stem}.ipynb" \
 		--output-dir "$(OUTDIR)"
 
 # Rule for metrics
-$(OUTDIR)/02-metrics_%.ipynb: $(METRICS_NOTEBOOK) | $(OUTDIR)
+$(OUTDIR)/03-metrics_%.ipynb: $(METRICS_NOTEBOOK) | $(OUTDIR)
 	@stem="$*"; \
-	BACKEND="$${stem%%_*}"; \
-	FILENAME="$${stem#*_}"; \
-	echo ">>> Running $< with BACKEND=$${BACKEND} FILENAME=$${FILENAME} -> $@"; \
+	CUMULATIVE="$${stem%%_*}"; \
+	tmp="$${stem#*_}"; \
+	BACKEND="$${tmp%%_*}"; \
+	FILENAME="$${tmp#*_}"; \
+	echo ">>> Running $< with CUMULATIVE=$${CUMULATIVE} BACKEND=$${BACKEND} FILENAME=$${FILENAME}"; \
 	. $(VENV)/bin/activate && \
-	BACKEND="$${BACKEND}" FILENAME="$${FILENAME}" \
+	CUMULATIVE="$${CUMULATIVE}" BACKEND="$${BACKEND}" FILENAME="$${FILENAME}" \
 	$(VENV)/bin/jupyter nbconvert --to notebook --execute "$<" \
 		--ExecutePreprocessor.timeout=-1 \
-		--output "02-metrics_$${stem}.ipynb" \
+		--output "03-metrics_$${stem}.ipynb" \
 		--output-dir "$(OUTDIR)"
 
 # Rule for analysis
-$(OUTDIR)/03-analysis_%.ipynb: $(ANALYSIS_NOTEBOOK) | $(OUTDIR)
+$(OUTDIR)/04-analysis-boxplots_%.ipynb: $(ANALYSIS_NOTEBOOK) | $(OUTDIR)
 	@stem="$*"; \
-	BACKEND="$${stem%%_*}"; \
-	FILENAME="$${stem#*_}"; \
-	echo ">>> Running $< with BACKEND=$${BACKEND} FILENAME=$${FILENAME} -> $@"; \
+	CUMULATIVE="$${stem%%_*}"; \
+	tmp="$${stem#*_}"; \
+	BACKEND="$${tmp%%_*}"; \
+	FILENAME="$${tmp#*_}"; \
+	echo ">>> Running $< with CUMULATIVE=$${CUMULATIVE} BACKEND=$${BACKEND} FILENAME=$${FILENAME}"; \
 	. $(VENV)/bin/activate && \
-	BACKEND="$${BACKEND}" FILENAME="$${FILENAME}" \
+	CUMULATIVE="$${CUMULATIVE}" BACKEND="$${BACKEND}" FILENAME="$${FILENAME}" \
 	$(VENV)/bin/jupyter nbconvert --to notebook --execute "$<" \
 		--ExecutePreprocessor.timeout=-1 \
-		--output "03-analysis_$${stem}.ipynb" \
+		--output "04-analysis-boxplots_$${stem}.ipynb" \
 		--output-dir "$(OUTDIR)"
 
 .PHONY: run embed metrics analysis clean

@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 700 580" version="1.1" id="svg43" ns1:docname="slide5-metrics.svg" ns2:version="1.4.3 (0d15f75, 2025-12-25)">
+  <ns1:namedview id="namedview43" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" ns2:showpageshadow="2" ns2:pageopacity="0.0" ns2:pagecheckerboard="0" ns2:deskcolor="#d1d1d1" ns2:zoom="0.90649918" ns2:cx="357.97054" ns2:cy="277.99253" ns2:window-width="1470" ns2:window-height="895" ns2:window-x="0" ns2:window-y="33" ns2:window-maximized="0" ns2:current-layer="svg43" />
+  <style id="style1">
+    text { font-family: 'EB Garamond', 'Georgia', serif; }
+    .traj-line {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawLine 2s ease forwards;
+    }
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+    .dot-pulse {
+      animation: pulse 1.5s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { r: 5; opacity: 0.8; }
+      50% { r: 9; opacity: 1; }
+    }
+    @media print {
+      .traj-line { stroke-dashoffset: 0 !important; animation: none !important; }
+      .dot-pulse { animation: none !important; }
+    }
+  </style>
+  <defs id="defs2">
+    <marker id="arrowGold" markerWidth="12" markerHeight="9" refX="11" refY="4.5" orient="auto">
+      <path d="M 0 0 L 12 4.5 L 0 9 Z" fill="#b8941f" id="path1" />
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="9" refX="11" refY="4.5" orient="auto">
+      <path d="M 0 0 L 12 4.5 L 0 9 Z" fill="#16a34a" id="path2" />
+    </marker>
+  </defs>
+
+  <line x1="50" y1="540" x2="670" y2="540" stroke="#2563eb" stroke-opacity="0.15" stroke-width="1.5" id="line2" />
+  <line x1="50" y1="540" x2="50" y2="30" stroke="#2563eb" stroke-opacity="0.15" stroke-width="1.5" id="line3" />
+  <text x="670" y="565" fill="#5a5a78" font-size="14" text-anchor="end" font-style="italic" id="text3">dim 1</text>
+  <text x="3.9773464" y="40.753464" fill="#5a5a78" font-size="14px" text-anchor="start" font-style="italic" id="text4">dim 2</text>
+
+  <path class="traj-line" d="M 90,490 L 180,410 L 290,420 L 350,290 L 470,260 L 520,130 L 620,165" fill="none" stroke="#2563eb" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round" id="path4" />
+
+
+  <circle cx="90" cy="490" r="8" fill="#2563eb" id="circle5" />
+  <circle cx="180" cy="410" r="8" fill="#2563eb" id="circle6" />
+  <circle cx="290" cy="420" r="8" fill="#2563eb" id="circle7" />
+  <circle cx="350" cy="290" r="8" fill="#2563eb" id="circle8" />
+  <circle cx="470" cy="260" r="8" fill="#2563eb" id="circle9" />
+  <circle cx="520" cy="130" r="8" fill="#2563eb" id="circle10" />
+  <circle cx="620" cy="165" r="8" fill="#2563eb" id="circle11" />
+
+  <text x="80" y="520" fill="#1e1e3a" font-size="16" text-anchor="middle" font-weight="500" id="text11">x₁</text>
+  <text x="170" y="443" fill="#1e1e3a" font-size="16" text-anchor="middle" font-weight="500" id="text12">x₂</text>
+  <text x="280" y="453" fill="#1e1e3a" font-size="16" text-anchor="middle" font-weight="500" id="text13">x₃</text>
+  <text x="340" y="323" fill="#1e1e3a" font-size="16" text-anchor="middle" font-weight="500" id="text14">x₄</text>
+  <text x="460" y="293" fill="#1e1e3a" font-size="16" text-anchor="middle" font-weight="500" id="text15">x₅</text>
+  <text x="510" y="118" fill="#1e1e3a" font-size="16" text-anchor="middle" font-weight="500" id="text16">x₆</text>
+  <text x="630" y="200" fill="#1e1e3a" font-size="16" text-anchor="middle" font-weight="500" id="text17">x₇</text>
+
+  <g opacity="1" id="g20">
+    <line x1="470" y1="260" x2="520" y2="130" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="8 5" id="line17" />
+
+    <line x1="464" y1="260" x2="476" y2="260" stroke="#dc2626" stroke-width="2" id="line18" />
+    <line x1="514" y1="130" x2="526" y2="130" stroke="#dc2626" stroke-width="2" id="line19" />
+    <text x="520" y="205" fill="#dc2626" font-size="17" font-weight="600" id="text19">d(x₅, x₆)</text>
+
+    <circle cx="470" cy="260" r="12" fill="none" stroke="#dc2626" stroke-width="1" opacity="0.3" id="circle19">
+      </circle>
+    <circle cx="520" cy="130" r="12" fill="none" stroke="#dc2626" stroke-width="1" opacity="0.3" id="circle20">
+      </circle>
+  </g>
+
+  <g opacity="1" id="g21">
+    <line x1="290" y1="420" x2="343" y2="298" stroke="#b8941f" stroke-width="3" marker-end="url(#arrowGold)" id="line20" />
+
+    <text x="282" y="355" fill="#b8941f" font-size="20" font-weight="700" id="text21">v₃</text>
+  </g>
+
+  <g opacity="1" id="g24">
+    <line x1="350" y1="290" x2="462" y2="264" stroke="#b8941f" stroke-width="2" opacity="0.25" marker-end="url(#arrowGold)" id="line22" />
+    <text x="400" y="258" fill="#b8941f" font-size="15" opacity="0.35" id="text22">v₄</text>
+
+    <path d="M 328,348 Q 370,280 425,295" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="6 4" id="path22" />
+    <text x="390" y="336" fill="#16a34a" font-size="20" font-weight="700" id="text23">a₃</text>
+
+    <text x="395" y="357" fill="#16a34a" font-size="13" opacity="0.7" id="text24">Δv = v₄ − v₃</text>
+  </g>
+
+  <g opacity="1" id="g30" transform="translate(12)">
+    <rect x="100" y="510" width="26" height="14" rx="3" fill="#2563eb" fill-opacity="0.5" id="rect24" />
+    <rect x="130" y="510" width="26" height="14" rx="3" fill="#2563eb" fill-opacity="0.15" id="rect25" />
+    <rect x="160" y="510" width="26" height="14" rx="3" fill="#2563eb" fill-opacity="0.5" id="rect26" />
+    <rect x="190" y="510" width="26" height="14" rx="3" fill="#2563eb" fill-opacity="0.5" id="rect27" />
+    <rect x="220" y="510" width="26" height="14" rx="3" fill="#2563eb" fill-opacity="0.15" id="rect28" />
+    <rect x="250" y="510" width="26" height="14" rx="3" fill="#2563eb" fill-opacity="0.5" id="rect29" />
+    <text x="100" y="507" fill="#2563eb" font-size="14px" font-weight="600" id="text29">Entropy</text>
+    <text x="290" y="522" fill="#5a5a78" font-size="12px" id="text30">← binary split at median</text>
+  </g>
+
+  <g opacity="1" id="g43" transform="translate(-2,8)">
+    <rect x="460" y="355" width="220" height="165" rx="12" fill="#9333ea" fill-opacity="0.04" stroke="#9333ea" stroke-opacity="0.12" stroke-width="1" id="rect30" />
+    <text x="570" y="378" fill="#9333ea" font-size="14px" font-weight="700" text-anchor="middle" id="text31">⑤ Centroid</text>
+    <text x="570" y="395" fill="#5a5a78" font-size="10px" text-anchor="middle" id="text32">(non-cumulative, computed over all items)</text>
+
+    <circle cx="500" cy="440" r="5" fill="#9333ea" opacity="0.4" id="circle32" />
+    <circle cx="530" cy="420" r="5" fill="#9333ea" opacity="0.4" id="circle33" />
+    <circle cx="560" cy="445" r="5" fill="#9333ea" opacity="0.4" id="circle34" />
+    <circle cx="590" cy="415" r="5" fill="#9333ea" opacity="0.4" id="circle35" />
+    <circle cx="620" cy="435" r="5" fill="#9333ea" opacity="0.4" id="circle36" />
+    <circle cx="545" cy="470" r="5" fill="#9333ea" opacity="0.4" id="circle37" />
+    <circle cx="610" cy="480" r="5" fill="#9333ea" opacity="0.4" id="circle38" />
+
+    <circle cx="560" cy="448" r="10" fill="none" stroke="#9333ea" stroke-width="2" stroke-dasharray="5, 3" id="circle39">
+      </circle>
+    <circle cx="560" cy="448" r="3.5" fill="#9333ea" id="circle40" />
+    <text x="560" y="500" fill="#9333ea" font-size="12px" font-weight="600" text-anchor="middle" id="text40">centroid</text>
+
+    <line x1="560" y1="448" x2="500" y2="440" stroke="#9333ea" stroke-width="1" opacity="0.2" stroke-dasharray="4, 3" id="line40" />
+    <line x1="560" y1="448" x2="620" y2="435" stroke="#9333ea" stroke-width="1" opacity="0.2" stroke-dasharray="4, 3" id="line41" />
+    <line x1="560" y1="448" x2="530" y2="420" stroke="#9333ea" stroke-width="1" opacity="0.2" stroke-dasharray="4, 3" id="line42" />
+    <line x1="560" y1="448" x2="610" y2="480" stroke="#9333ea" stroke-width="1" opacity="0.2" stroke-dasharray="4, 3" id="line43" />
+  </g>
+</svg>

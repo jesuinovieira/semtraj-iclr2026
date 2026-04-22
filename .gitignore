@@ -186,8 +186,16 @@ temp/
 data/
 results/
 .ruff_cache/
+!data/
+!data/raw/
 !data/raw/.gitkeep
 !data/raw/tocsv.py
+!data/raw/*.csv
 notebooks/executed
 models/
 arxiv/
+
+presentations/slides/SLIDES.md
+presentations/**/node_modules/
+presentations/**/presentation.zip
+presentations/**/presentation.pdf

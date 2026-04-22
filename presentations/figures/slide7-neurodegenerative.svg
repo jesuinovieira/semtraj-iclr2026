@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 680 375"
+   version="1.1"
+   id="svg33"
+   sodipodi:docname="slide7-neurodegenerative.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview33"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.0124654"
+     inkscape:cx="330.8755"
+     inkscape:cy="211.36525"
+     inkscape:window-width="1470"
+     inkscape:window-height="895"
+     inkscape:window-x="0"
+     inkscape:window-y="33"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg33" />
+  <style
+     id="style1">
+    text { font-family: 'EB Garamond', 'Georgia', serif; }
+    .traj-line {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawLine 2s ease forwards;
+    }
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+    .dot-pulse {
+      animation: pulse 1.5s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { r: 5; opacity: 0.8; }
+      50% { r: 9; opacity: 1; }
+    }
+    @media print {
+      .traj-line { stroke-dashoffset: 0 !important; animation: none !important; }
+      .dot-pulse { animation: none !important; }
+    }
+  </style>
+  <defs
+     id="defs1">
+    <marker
+       id="arrowRed"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <path
+         d="M 0 0 L 10 3.5 L 0 7 Z"
+         fill="#dc2626"
+         id="path1" />
+    </marker>
+  </defs>
+  <text
+     x="165"
+     y="38"
+     fill="#16a34a"
+     font-size="19px"
+     font-weight="600"
+     text-anchor="middle"
+     id="text1">Healthy Control</text>
+  <text
+     x="165"
+     y="58"
+     fill="#5a5a78"
+     font-size="12px"
+     text-anchor="middle"
+     id="text2">Organized · Broad · Predictable</text>
+  <path
+     class="traj-line"
+     d="m 40,184 40,-30 50,-5 50,-25 40,-10 50,-10 40,-15"
+     fill="none"
+     stroke="#16a34a"
+     stroke-width="3"
+     stroke-linecap="round"
+     opacity="0.8"
+     id="path3" />
+  <circle
+     cx="40"
+     cy="184"
+     r="7"
+     fill="#16a34a"
+     opacity="0.8"
+     id="circle3" />
+  <circle
+     cx="80"
+     cy="154"
+     r="7"
+     fill="#16a34a"
+     opacity="0.8"
+     id="circle4" />
+  <circle
+     cx="130"
+     cy="149"
+     r="7"
+     fill="#16a34a"
+     opacity="0.8"
+     id="circle5" />
+  <circle
+     cx="180"
+     cy="124"
+     r="7"
+     fill="#16a34a"
+     opacity="0.8"
+     id="circle6" />
+  <circle
+     cx="220"
+     cy="114"
+     r="7"
+     fill="#16a34a"
+     opacity="0.8"
+     id="circle7" />
+  <circle
+     cx="270"
+     cy="104"
+     r="7"
+     fill="#16a34a"
+     opacity="0.8"
+     id="circle8" />
+  <circle
+     cx="310"
+     cy="89"
+     r="7"
+     fill="#16a34a"
+     class="dot-pulse"
+     id="circle9" />
+  <circle
+     cx="175"
+     cy="79"
+     r="7"
+     fill="none"
+     stroke="#16a34a"
+     stroke-width="2"
+     stroke-dasharray="4, 3"
+     opacity="0.5"
+     id="circle10" />
+  <circle
+     cx="175"
+     cy="79"
+     r="3"
+     fill="#16a34a"
+     opacity="0.5"
+     id="circle11" />
+  <line
+     x1="175"
+     y1="79"
+     x2="40"
+     y2="184"
+     stroke="#16a34a"
+     stroke-width="1"
+     opacity="0.15"
+     stroke-dasharray="4, 4"
+     id="line11" />
+  <line
+     x1="175"
+     y1="79"
+     x2="310"
+     y2="89"
+     stroke="#16a34a"
+     stroke-width="1"
+     opacity="0.15"
+     stroke-dasharray="4, 4"
+     id="line12" />
+  <text
+     x="185"
+     y="76"
+     fill="#16a34a"
+     font-size="11px"
+     opacity="0.5"
+     font-weight="500"
+     id="text12">centroid (far)</text>
+  <text
+     x="165"
+     y="220"
+     fill="#16a34a"
+     font-size="13px"
+     text-anchor="middle"
+     opacity="0.6"
+     id="text13">low velocity · low entropy</text>
+  <text
+     x="165"
+     y="238"
+     fill="#16a34a"
+     font-size="13px"
+     text-anchor="middle"
+     opacity="0.6"
+     id="text14">broad semantic space</text>
+  <line
+     x1="340"
+     y1="20"
+     x2="340"
+     y2="460"
+     stroke="#000000"
+     stroke-opacity="0.12"
+     stroke-width="1.5"
+     stroke-dasharray="8 5"
+     id="line14" />
+  <g
+     id="g27">
+    <text
+       x="510"
+       y="38"
+       fill="#dc2626"
+       font-size="19"
+       font-weight="600"
+       text-anchor="middle"
+       id="text15">PD / bvFTD</text>
+    <text
+       x="510"
+       y="58"
+       fill="#5a5a78"
+       font-size="12"
+       text-anchor="middle"
+       id="text16">Erratic · Constricted · Unpredictable</text>
+    <ellipse
+       cx="510"
+       cy="150"
+       rx="100"
+       ry="65"
+       fill="none"
+       stroke="#dc2626"
+       stroke-opacity="0.12"
+       stroke-width="1.5"
+       stroke-dasharray="6 4"
+       id="ellipse16" />
+    <path
+       class="traj-line"
+       d="M 440,155 L 490,120 L 465,180 L 545,110 L 520,175 L 575,140 L 555,160"
+       fill="none"
+       stroke="#dc2626"
+       stroke-width="3"
+       stroke-linecap="round"
+       opacity="0.8"
+       id="path17" />
+    <circle
+       cx="440"
+       cy="155"
+       r="7"
+       fill="#dc2626"
+       opacity="0.8"
+       id="circle17" />
+    <circle
+       cx="490"
+       cy="120"
+       r="7"
+       fill="#dc2626"
+       opacity="0.8"
+       id="circle18" />
+    <circle
+       cx="465"
+       cy="180"
+       r="7"
+       fill="#dc2626"
+       opacity="0.8"
+       id="circle19" />
+    <circle
+       cx="545"
+       cy="110"
+       r="7"
+       fill="#dc2626"
+       opacity="0.8"
+       id="circle20" />
+    <circle
+       cx="520"
+       cy="175"
+       r="7"
+       fill="#dc2626"
+       opacity="0.8"
+       id="circle21" />
+    <circle
+       cx="575"
+       cy="140"
+       r="7"
+       fill="#dc2626"
+       opacity="0.8"
+       id="circle22" />
+    <circle
+       cx="555"
+       cy="160"
+       r="7"
+       fill="#dc2626"
+       class="dot-pulse"
+       id="circle23" />
+    <circle
+       cx="510"
+       cy="150"
+       r="7"
+       fill="none"
+       stroke="#dc2626"
+       stroke-width="2"
+       stroke-dasharray="4 3"
+       opacity="0.5"
+       id="circle24" />
+    <circle
+       cx="510"
+       cy="150"
+       r="3"
+       fill="#dc2626"
+       opacity="0.5"
+       id="circle25" />
+    <text
+       x="520"
+       y="148"
+       fill="#dc2626"
+       font-size="11"
+       opacity="0.6"
+       font-weight="500"
+       id="text25">centroid (near)</text>
+    <text
+       x="510"
+       y="238"
+       fill="#dc2626"
+       font-size="13"
+       text-anchor="middle"
+       opacity="0.6"
+       id="text26">high velocity · high entropy</text>
+    <text
+       x="510"
+       y="256"
+       fill="#dc2626"
+       font-size="13"
+       text-anchor="middle"
+       opacity="0.6"
+       id="text27">constricted semantic space</text>
+  </g>
+  <g
+     opacity="1"
+     id="g28">
+    <line
+       x1="490"
+       y1="120"
+       x2="468"
+       y2="174"
+       stroke="#dc2626"
+       stroke-width="2"
+       marker-end="url(#arrowRed)"
+       opacity="0.5"
+       id="line27" />
+    <line
+       x1="465"
+       y1="180"
+       x2="540"
+       y2="115"
+       stroke="#dc2626"
+       stroke-width="2"
+       marker-end="url(#arrowRed)"
+       opacity="0.5"
+       id="line28" />
+  </g>
+  <rect
+     x="44"
+     y="280"
+     width="250"
+     height="80"
+     rx="12"
+     fill="#16a34a"
+     fill-opacity="0.05"
+     stroke="#16a34a"
+     stroke-opacity="0.15"
+     stroke-width="1"
+     id="rect28" />
+  <text
+     x="169"
+     y="308"
+     fill="#16a34a"
+     font-size="14px"
+     text-anchor="middle"
+     font-weight="500"
+     id="text28">↓ distance to next, velocity</text>
+  <text
+     x="169"
+     y="328"
+     fill="#16a34a"
+     font-size="14px"
+     text-anchor="middle"
+     font-weight="500"
+     id="text29">↓ acceleration, entropy</text>
+  <text
+     x="169"
+     y="348"
+     fill="#16a34a"
+     font-size="14px"
+     text-anchor="middle"
+     font-weight="500"
+     id="text30">↑ centroid distance</text>
+  <rect
+     x="386"
+     y="280"
+     width="250"
+     height="80"
+     rx="12"
+     fill="#dc2626"
+     fill-opacity="0.05"
+     stroke="#dc2626"
+     stroke-opacity="0.15"
+     stroke-width="1"
+     id="rect30" />
+  <text
+     x="511"
+     y="308"
+     fill="#dc2626"
+     font-size="14px"
+     text-anchor="middle"
+     font-weight="500"
+     id="text31">↑ distance to next, velocity</text>
+  <text
+     x="511"
+     y="328"
+     fill="#dc2626"
+     font-size="14px"
+     text-anchor="middle"
+     font-weight="500"
+     id="text32">↑ acceleration, entropy</text>
+  <text
+     x="511"
+     y="348"
+     fill="#dc2626"
+     font-size="14px"
+     text-anchor="middle"
+     font-weight="500"
+     id="text33">↓ centroid distance</text>
+  <text
+     x="511"
+     y="376"
+     fill="#5a5a78"
+     font-size="10px"
+     text-anchor="middle"
+     font-style="italic"
+     opacity="0.7"
+     id="text34">PD and bvFTD did not differ from each other</text>
+</svg>

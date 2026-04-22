@@ -6,8 +6,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-# FIXME: must have latex installed in this path, maybe try and catch error
-os.environ["PATH"] += os.pathsep + "/Library/TeX/texbin"
+# Must have latex installed in this path
+LATEX_PATH = "/Library/TeX/texbin"
+if os.path.isdir(LATEX_PATH):
+    os.environ["PATH"] += os.pathsep + LATEX_PATH
 
 plt.rcParams["text.usetex"] = True
 plt.rcParams["font.family"] = "serif"

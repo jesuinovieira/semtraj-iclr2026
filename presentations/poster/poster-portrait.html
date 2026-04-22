@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Semantic Trajectories Poster — ICLR 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f4fb;
+  --blue: #2563eb;
+  --blue-dim: #6b9ddb;
+  --gold: #b8941f;
+  --gold-dim: #d4b84a;
+  --green: #16a34a;
+  --red: #dc2626;
+  --pink: #9333ea;
+  --text: #1e1e3a;
+  --text-dim: #5a5a78;
+  --card-bg: #ffffff;
+  --card-border: rgba(40,60,120,0.15);
+  --callout-bg: rgba(184,148,31,0.06);
+  --callout-border: rgba(184,148,31,0.25);
+  --surface: rgba(0,0,0,0.03);
+}
+
+@page { size: A1 portrait; margin: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  margin: 0; padding: 0;
+  font-family: 'EB Garamond', 'Georgia', serif;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: #bbb;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* ── POSTER SHEET (fixed A1) ── */
+#poster {
+  width: 594mm;
+  height: 841mm;
+  background: var(--bg);
+  background-image:
+    linear-gradient(rgba(40,60,120,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(40,60,120,0.04) 1px, transparent 1px);
+  background-size: 20mm 20mm;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  padding: 12mm 14mm;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: 8mm;
+  grid-template-areas:
+    "header header header"
+    "col1   col2   col3"
+    "footer footer footer";
+  overflow: hidden;
+}
+
+/* ── HEADER ── */
+header {
+  grid-area: header;
+  text-align: center;
+  padding-bottom: 5mm;
+  border-bottom: 2px solid var(--card-border);
+}
+header h1 {
+  font-size: 4.8rem;
+  line-height: 1.12;
+  margin: 0 0 3mm 0;
+  font-weight: 700;
+}
+.authors {
+  font-size: 1.5rem;
+  color: var(--text-dim);
+  margin-bottom: 1.5mm;
+}
+.affiliations {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+.equal-note {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  opacity: 0.5;
+  font-style: italic;
+  margin-top: 1mm;
+}
+
+/* ── COLUMNS ── */
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 5mm;
+}
+.col1 { grid-area: col1; }
+.col2 { grid-area: col2; }
+.col3 { grid-area: col3; }
+
+/* ── SECTION HEADINGS ── */
+h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 1.5mm;
+  display: inline-block;
+}
+h2.full { display: block; }
+
+/* ── COLOR HELPERS ── */
+.blue { color: var(--blue); }
+.gold { color: var(--gold); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+.pink { color: var(--pink); }
+em { font-style: italic; color: var(--blue); }
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
+.math { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; color: var(--gold); }
+
+/* ── METRIC CARDS ── */
+.metric-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 4mm 5mm;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 5px; height: 100%;
+  background: var(--text-dim);
+  border-radius: 10px 0 0 10px;
+}
+.metric-card.blue-border::before { background: var(--blue); }
+.metric-card.gold-border::before { background: var(--gold); }
+.metric-card.green-border::before { background: var(--green); }
+.metric-card.red-border::before { background: var(--red); }
+.metric-card.pink-border::before { background: var(--pink); }
+.metric-card h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1.5mm 0;
+}
+.metric-card p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+/* ── CALLOUT ── */
+.callout {
+  padding: 3mm 4mm;
+  border: 1px solid var(--callout-border);
+  border-radius: 8px;
+  background: var(--callout-bg);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1.45;
+}
+
+/* ── FIGURES ── */
+.figure {
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 2mm;
+  text-align: center;
+}
+.figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── DATASET MINI-CARDS ── */
+.dataset-card {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  padding: 2.5mm 4mm;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.dataset-card .label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 7px;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+.dataset-card h4 { font-size: 1.1rem; font-weight: 600; margin: 0 0 0.5mm 0; }
+.dataset-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.35; margin: 0; }
+
+/* ── INVERTED CONCLUSION CARD ── */
+.conclusion-card {
+  background: var(--blue);
+  color: #fff;
+  border-radius: 10px;
+  padding: 5mm 6mm;
+}
+.conclusion-card h4 {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 2mm 0;
+}
+.conclusion-card p {
+  color: rgba(255,255,255,0.9);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── FOOTER ── */
+footer {
+  grid-area: footer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3mm 8mm;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+}
+footer img.logo { height: 12mm; }
+footer .qr-block { text-align: center; }
+footer .qr-block img { width: 14mm; height: 14mm; border-radius: 4px; border: 1px solid var(--card-border); }
+footer .qr-block p { font-size: 0.7rem; color: var(--text-dim); margin-top: 1mm; }
+footer .venue-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1.5px solid var(--gold-dim);
+  padding: 2mm 5mm;
+  border-radius: 30px;
+}
+
+@media print {
+  body { background: none; }
+  #poster {
+    box-shadow: none;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: var(--bg) !important;
+    background-image:
+      linear-gradient(rgba(40,60,120,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(40,60,120,0.08) 1px, transparent 1px) !important;
+    background-size: 20mm 20mm !important;
+  }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="poster">
+
+  <!-- ══════════ HEADER (no venue tag — moved to footer) ══════════ -->
+  <header>
+    <h1>Characterizing human <span class="blue">semantic navigation</span><br>as <span class="gold">trajectories</span> in embedding space</h1>
+    <div class="authors">
+      Felipe D. Toro-Hernández<sup>1</sup> &middot;
+      Jesuino Vieira Filho<sup>2</sup> &middot;
+      Rodrigo M. Cabral-Carvalho<sup>1</sup>
+    </div>
+    <div class="affiliations">
+      <sup>1</sup> Center of Mathematics, Computing and Cognition &middot; Federal University of ABC &nbsp;&nbsp;
+      <sup>2</sup> Dept. of Computer Science and Operations Research &middot; Université de Montréal
+    </div>
+    <div class="equal-note">All authors contributed equally</div>
+  </header>
+
+  <!-- ══════════ COLUMN 1: Motivation + Methods ══════════ -->
+  <section class="col col1">
+
+    <h2 class="full">Human semantic navigation: moving through concepts</h2>
+    <div class="figure">
+      <img src="../figures/slide2-clusters.svg" alt="Semantic clusters diagram">
+    </div>
+    <p>Semantic retrieval is often characterized as <em>clustering</em> and <em>switching</em>; traditional pipelines are <span class="blue">labor-intensive</span>, heterogeneous, and miss the <span class="blue">step-by-step granularity</span> of how meaning unfolds over time.</p>
+    <div class="callout">
+      &rarr; What if we framed semantic retrieval as a <strong>trajectory through geometric space</strong>?
+    </div>
+
+    <h2 class="full">Cumulative embeddings encode search history</h2>
+    <p>Each step encodes the <span class="blue">full prefix</span>: embed <span class="mono blue">"cat"</span> &rarr; <span class="mono blue">"cat dog"</span> &rarr; <span class="mono blue">"cat dog shark"</span> &hellip; capturing dependencies and working memory. Result: a trajectory per participant &times; concept pairs.</p>
+    <div class="figure">
+      <img src="../figures/slide3-cumulative.svg" alt="Cumulative embedding concept">
+    </div>
+
+    <h2 class="full">Five physics-inspired trajectory metrics</h2>
+    <div class="figure">
+      <img src="../figures/slide5-metrics.svg" alt="Five physics-inspired metrics">
+    </div>
+    <div class="metric-card red-border">
+      <h4 class="red">① Distance to next</h4>
+      <p>Cosine distance between consecutive points. <span class="blue">Semantic jump size</span>.</p>
+    </div>
+    <div class="metric-card gold-border">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h4 class="gold">② Velocity</h4>
+        <span class="math" style="font-size:0.85rem;">v<sub>t</sub> = x<sub>t+1</sub> &minus; x<sub>t</sub></span>
+      </div>
+      <p>Direction + magnitude of each step.</p>
+    </div>
+    <div class="metric-card green-border">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h4 class="green">③ Acceleration</h4>
+        <span class="math" style="font-size:0.85rem;">a<sub>t</sub> = v<sub>t+1</sub> &minus; v<sub>t</sub></span>
+      </div>
+      <p>Low &rarr; stable cluster. High &rarr; erratic switch.</p>
+    </div>
+    <div class="metric-card blue-border">
+      <h4 class="blue">④ Entropy</h4>
+      <p>Shannon entropy of median-split steps. <span class="blue">Predictability</span> of the search.</p>
+    </div>
+    <div class="metric-card pink-border">
+      <h4 class="pink">⑤ Distance to centroid</h4>
+      <p>Distance to mean position of all items. <span class="blue">Dispersion</span> of the search.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ COLUMN 2: Datasets + Result 1 (Neuro) + Result 2 (Category) ══════════ -->
+  <section class="col col2">
+
+    <h2 class="full">Four datasets, four languages, two tasks</h2>
+    <p>Statistics: GLMMs with Tukey HSD post-hoc.</p>
+    <div class="dataset-card">
+      <div class="label" style="color:var(--text-dim); background:var(--surface); border:1px solid var(--card-border);">A</div>
+      <div>
+        <h4>Neurodegenerative</h4>
+        <p>ES-CL &middot; N=76 &middot; Property Listing &middot; HC / PD / bvFTD</p>
+      </div>
+    </div>
+    <div class="dataset-card">
+      <div class="label" style="color:var(--text-dim); background:var(--surface); border:1px solid var(--card-border);">B</div>
+      <div>
+        <h4>Swear Fluency</h4>
+        <p>EN &middot; N=274 &middot; Verbal Fluency &middot; Swear / Animals / Letters</p>
+      </div>
+    </div>
+    <div class="dataset-card">
+      <div class="label" style="color:var(--text-dim); background:var(--surface); border:1px solid var(--card-border);">C</div>
+      <div>
+        <h4>Cross-Linguistic PLT</h4>
+        <p>IT (N=69) &amp; DE (N=73) &middot; 10 categories &middot; Property Listing</p>
+      </div>
+    </div>
+    <div style="display:flex; gap:3mm;">
+      <div class="metric-card" style="flex:1;">
+        <h4>Embedding models</h4>
+        <p>● OpenAI text-embedding-3-large<br>● Google text-embedding-004<br>● Qwen3-Embedding-0.6B<br><span style="color:var(--text-dim);">● fastText (baseline, non-cumul.)</span></p>
+        <p style="font-size:0.8rem; color:var(--text-dim); margin-top:2mm; font-style:italic; border-top:1px solid var(--card-border); padding-top:2mm;">All results reported with OpenAI unless otherwise noted.</p>
+      </div>
+      <div class="metric-card" style="flex:1;">
+        <h4>Design choices</h4>
+        <p>Causal and bidirectional attention<br>Cumulative vs. non-cumulative comparison<br>ZCA-whitening tested for anisotropy</p>
+      </div>
+    </div>
+
+    <h2 class="full">Patients show more erratic, constricted trajectories</h2>
+    <div class="figure">
+      <img src="../figures/slide7-neurodegenerative.svg" alt="Neurodegenerative boxplots">
+    </div>
+    <div style="display:flex; gap:3mm;">
+      <div class="metric-card red-border" style="flex:1;">
+        <h4 class="red">&uarr; Higher in patients</h4>
+        <p><strong>Distance to next</strong> — larger semantic jumps<br>
+           <strong>Velocity</strong> — erratic movement<br>
+           <strong>Acceleration</strong> — abrupt direction changes<br>
+           <strong>Entropy</strong> — unpredictable search</p>
+      </div>
+      <div class="metric-card red-border" style="flex:1;">
+        <h4 class="red">&darr; Lower in patients</h4>
+        <p><strong>Distance to centroid</strong> — search confined to a tighter neighborhood despite being more volatile</p>
+      </div>
+    </div>
+    <div class="callout">
+      A kinematic signature of executive dysfunction — volatile yet constricted trajectories.
+    </div>
+
+    <h2 class="full">Category structure shapes semantic kinematics</h2>
+    <div class="figure">
+      <img src="../figures/slide8-swear-category.svg" alt="Swear vs Animals vs Letters">
+    </div>
+    <div style="display:flex; gap:3mm;">
+      <div class="metric-card green-border" style="flex:1;">
+        <h4 class="green">Animals</h4>
+        <p>Lowest kinematic values, highest centroid distance. Structured sub-categories (pets, farm, sea&hellip;) allow <strong>organized exploitation</strong>.</p>
+      </div>
+      <div class="metric-card red-border" style="flex:1;">
+        <h4 class="red">Swear Words</h4>
+        <p>Highest kinematic values across all metrics. Taboo lexicons lack sub-category structure &rarr; <strong>high variability in a compact space</strong>.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════ COLUMN 3: Cross-Ling + Cumul vs Non-Cumul + Robustness + Conclusion ══════════ -->
+  <section class="col col3">
+
+    <h2 class="full">Language and culture shape semantic organization</h2>
+    <div class="figure">
+      <img src="../figures/slide8b-cross-linguistic.svg" alt="Italian vs German">
+    </div>
+    <div style="display:flex; gap:3mm;">
+      <div class="metric-card green-border" style="flex:1;">
+        <h4 class="green">Italian (IT) &middot; N=69</h4>
+        <p>10 categories &middot; Property Listing Task. Bird is reference. Building and Vehicle <strong>least separated</strong>. Category effects <em>selective</em>, not uniform.</p>
+      </div>
+      <div class="metric-card pink-border" style="flex:1;">
+        <h4 class="pink">German (DE) &middot; N=73</h4>
+        <p>Same 10 categories &middot; Same protocol. Vehicle <strong>most distinct</strong> from Bird. Bird highest velocity &amp; acceleration. Fruit vs. tool-like categories show strongest centroid gaps.</p>
+      </div>
+    </div>
+    <div class="callout">
+      Same protocol, different category effects – cultural and linguistic structure shapes organization.
+    </div>
+
+    <h2 class="full">Cumulative wins for long sequences</h2>
+    <div class="figure">
+      <img src="../figures/slide4-cumul-vs-noncumul.svg" alt="Cumulative vs non-cumulative comparison">
+    </div>
+    <div style="display:flex; gap:3mm;">
+      <div class="metric-card blue-border" style="flex:1;">
+        <h4 class="blue">Cumulative &rarr; long sequences</h4>
+        <p>Longer trajectories provide rich context — <strong>more significant group differences</strong> with higher effect sizes across all metrics.</p>
+      </div>
+      <div class="metric-card red-border" style="flex:1;">
+        <h4 class="red">Non-cumulative &rarr; short sequences</h4>
+        <p>With only ~5 items, there is <strong>too little context</strong> to accumulate. Point-to-point variation retains more discriminative signal.</p>
+      </div>
+    </div>
+    <div class="callout">
+      Complementary approaches — trajectory length determines which best exposes semantic structure.
+    </div>
+
+    <h2 class="full">Different models, convergent geometry</h2>
+    <div class="figure">
+      <img src="../figures/slide9-model-robustness.svg" alt="Cross-model robustness">
+    </div>
+
+    <h2 class="full">Towards a geometric framework for semantic navigation</h2>
+    <div class="conclusion-card">
+      <p>
+        <strong>1.</strong> Cumulative metrics build on clustering/switching, capturing fine-grained dynamics<br>
+        <strong>2.</strong> Clinical utility — kinematic signatures of neurocognitive dysfunction<br>
+        <strong>3.</strong> Discriminates categories &amp; reveals language-specific organization<br>
+        <strong>4.</strong> Model-robust — local kinematics converge across embedding architectures
+      </p>
+    </div>
+    <div class="callout">
+      <strong>Future:</strong> temporal timestamps &middot; more mathematically robust (potentially non-Euclidean) metrics
+    </div>
+  </section>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer>
+    <div class="qr-block">
+      <img src="../figures/qrcode-paper.jpeg" alt="Paper QR">
+      <p>Paper</p>
+    </div>
+    <img class="logo" src="../figures/logo-ufabc.png" alt="UFABC">
+    <img class="logo" src="../figures/logo-iclr.png" alt="ICLR 2026">
+    <img class="logo" src="../figures/logo-udem.png" alt="UdeM">
+    <div class="qr-block">
+      <img src="../figures/qrcode-github.jpeg" alt="GitHub QR">
+      <p>Code</p>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

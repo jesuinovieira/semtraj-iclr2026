@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semantic Trajectories — ICLR 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   3Blue1Brown–Inspired Theme  (Dark + Light)
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #1c1c2e;
+  --bg2: #16162a;
+  --blue: #58a6ff;
+  --blue-dim: #2d5a8e;
+  --gold: #e8c547;
+  --gold-dim: #a08930;
+  --green: #5ae682;
+  --red: #ff6b7a;
+  --pink: #e07aff;
+  --text: #dce4f0;
+  --text-dim: #7a829e;
+  --surface: rgba(255,255,255,0.04);
+  --card-bg: rgba(0,0,0,0.3);
+  --card-border: rgba(88,166,255,0.15);
+  --diagram-bg: rgba(0,0,0,0.25);
+  --grid-color: rgba(88,166,255,0.03);
+  --axis-stroke: rgba(88,166,255,0.15);
+  --nav-grad: rgba(28,28,46,0.95);
+  --callout-bg: rgba(232,197,71,0.04);
+  --callout-border: rgba(232,197,71,0.2);
+}
+
+/* ── LIGHT MODE ── */
+body.light {
+  --bg: #f4f4fb;
+  --bg2: #eaeaf5;
+  --blue: #2563eb;
+  --blue-dim: #6b9ddb;
+  --gold: #b8941f;
+  --gold-dim: #d4b84a;
+  --green: #16a34a;
+  --red: #dc2626;
+  --pink: #9333ea;
+  --text: #1e1e3a;
+  --text-dim: #5a5a78;
+  --surface: rgba(0,0,0,0.04);
+  --card-bg: rgba(255,255,255,0.75);
+  --card-border: rgba(40,60,120,0.15);
+  --diagram-bg: rgba(255,255,255,0.7);
+  --grid-color: rgba(40,60,120,0.06);
+  --axis-stroke: rgba(40,60,120,0.25);
+  --nav-grad: rgba(244,244,251,0.95);
+  --callout-bg: rgba(184,148,31,0.06);
+  --callout-border: rgba(184,148,31,0.25);
+}
+
+/* Light mode SVG overrides (neutral fills) */
+body.light svg text[fill="#dce4f0"] { fill: #1e1e3a !important; }
+body.light svg text[fill="#7a829e"] { fill: #5a5a78 !important; }
+body.light svg tspan[fill="#e07aff"] { fill: #9333ea !important; }
+body.light svg text[fill="#58a6ff"] { fill: #2563eb !important; }
+body.light svg text[fill="#e8c547"] { fill: #b8941f !important; }
+body.light svg text[fill="#5ae682"] { fill: #16a34a !important; }
+body.light svg text[fill="#ff6b7a"] { fill: #dc2626 !important; }
+body.light svg text[fill="#e07aff"] { fill: #9333ea !important; }
+body.light svg circle[fill="#58a6ff"] { fill: #2563eb !important; }
+body.light svg circle[fill="#e8c547"] { fill: #b8941f !important; }
+body.light svg circle[fill="#5ae682"] { fill: #16a34a !important; }
+body.light svg circle[fill="#ff6b7a"] { fill: #dc2626 !important; }
+body.light svg circle[fill="#e07aff"] { fill: #9333ea !important; }
+body.light svg circle[stroke="#5ae682"] { stroke: #16a34a !important; }
+body.light svg circle[stroke="#ff6b7a"] { stroke: #dc2626 !important; }
+body.light svg circle[stroke="#e07aff"] { stroke: #9333ea !important; }
+body.light svg line[stroke="#e8c547"] { stroke: #b8941f !important; }
+body.light svg line[stroke="#ff6b7a"] { stroke: #dc2626 !important; }
+body.light svg line[stroke="#5ae682"] { stroke: #16a34a !important; }
+body.light svg line[stroke="#e07aff"] { stroke: #9333ea !important; }
+body.light svg path[stroke="#58a6ff"] { stroke: #2563eb !important; }
+body.light svg path[stroke="#5ae682"] { stroke: #16a34a !important; }
+body.light svg path[stroke="#ff6b7a"] { stroke: #dc2626 !important; }
+body.light svg path[stroke="#e8c547"] { stroke: #b8941f !important; }
+body.light svg path[stroke="#5ae682"] { stroke: #16a34a !important; }
+body.light svg line[stroke="rgba(88,166,255,0.15)"] { stroke: var(--axis-stroke) !important; }
+body.light svg line[stroke="rgba(255,255,255,0.06)"] { stroke: rgba(0,0,0,0.08) !important; }
+body.light svg rect[fill="rgba(255,255,255,0.04)"] { fill: rgba(0,0,0,0.06) !important; }
+body.light svg rect[stroke="rgba(255,255,255,0.06)"] { stroke: rgba(0,0,0,0.1) !important; }
+body.light svg path[fill="none"][stroke="rgba(255,255,255,0.2)"] { stroke: rgba(0,0,0,0.2) !important; }
+body.light svg ellipse[stroke="rgba(90,230,130,0.15)"] { stroke: rgba(22,163,74,0.25) !important; }
+body.light svg ellipse[stroke="rgba(255,107,122,0.15)"] { stroke: rgba(220,38,38,0.25) !important; }
+body.light svg ellipse[stroke="rgba(255,107,122,0.12)"] { stroke: rgba(220,38,38,0.2) !important; }
+body.light svg circle[stroke="rgba(88,166,255,0.2)"] { stroke: rgba(37,99,235,0.25) !important; }
+body.light svg circle[stroke="rgba(232,197,71,0.2)"] { stroke: rgba(184,148,31,0.3) !important; }
+
+/* Light mode: adjust accent color classes */
+body.light .blue { color: var(--blue); }
+body.light .gold { color: var(--gold); }
+body.light .green { color: var(--green); }
+body.light .red { color: var(--red); }
+body.light .pink { color: var(--pink); }
+body.light em { color: var(--blue); }
+
+body.light .tag {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+}
+body.light .math {
+  color: var(--gold);
+  background: rgba(184,148,31,0.1);
+}
+body.light .dot.active {
+  background: var(--blue);
+  box-shadow: 0 0 8px var(--blue);
+}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 1000;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+.theme-toggle:hover {
+  border-color: var(--gold);
+  background: rgba(232,197,71,0.1);
+}
+body.light .theme-toggle {
+  border-color: rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.05);
+}
+body.light .theme-toggle:hover {
+  border-color: var(--gold);
+  background: rgba(184,148,31,0.1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'EB Garamond', 'Georgia', serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.4s ease;
+  /* Grid on body so it covers entire viewport including letterbox */
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+#stage {
+  width: 1440px;
+  height: 810px;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center center;
+}
+
+/* ── Slides ── */
+.slide {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 40px 40px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.slide.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Grid bg is on body — covers full viewport including letterbox */
+
+/* ── Typography ── */
+h1 { font-size: 3.2rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.5px; }
+h2 { font-size: 2.4rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.3px; }
+h3 { font-size: 1.4rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+p, li { font-size: 1.2rem; line-height: 1.7; color: var(--text); }
+.dim { color: var(--text-dim); }
+.blue { color: var(--blue); }
+.gold { color: var(--gold); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+.pink { color: var(--pink); }
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
+em { font-style: italic; color: var(--blue); }
+
+.math {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem;
+  color: var(--gold);
+  background: rgba(232,197,71,0.08);
+  padding: 3px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ── Canvases ── */
+canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+.slide > *:not(canvas) { position: relative; z-index: 1; }
+
+/* ── Diagram containers ── */
+.diagram {
+  position: relative;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background: var(--diagram-bg);
+  overflow: hidden;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+/* ── Layout helpers ── */
+.row { display: flex; gap: 50px; align-items: flex-start; width: 100%; max-width: 1200px; }
+.col { flex: 1; }
+.center { text-align: center; }
+.max-w { max-width: 1200px; width: 100%; }
+
+/* ── Tag ── */
+.tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 4px 16px;
+  border-radius: 30px;
+  margin-bottom: 18px;
+}
+
+/* ── Fade-up anim for child elements ── */
+.slide.active .anim {
+  animation: fadeUp 0.6s ease both;
+}
+.slide.active .anim.d1 { animation-delay: 0.15s; }
+.slide.active .anim.d2 { animation-delay: 0.3s; }
+.slide.active .anim.d3 { animation-delay: 0.45s; }
+.slide.active .anim.d4 { animation-delay: 0.6s; }
+.slide.active .anim.d5 { animation-delay: 0.75s; }
+.slide.active .anim.d6 { animation-delay: 0.9s; }
+.slide.active .anim.d7 { animation-delay: 1.05s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Navigation ── */
+.nav-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  z-index: 999;
+  background: linear-gradient(transparent, var(--nav-grad));
+}
+.nav-bar .counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+.nav-bar .dots {
+  display: flex; gap: 8px;
+}
+.nav-bar .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  opacity: 0.3;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.nav-bar .dot.active {
+  opacity: 1;
+  background: var(--blue);
+  box-shadow: 0 0 10px var(--blue);
+  transform: scale(1.3);
+}
+.nav-bar .keys {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+/* Progress */
+.progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--gold));
+  transition: width 0.4s ease;
+  z-index: 999;
+}
+
+/* ── Metric card (3b1b-style box) ── */
+.metric-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  transition: background 0.4s ease, border-color 0.4s ease;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--blue);
+  border-radius: 3px;
+}
+.metric-card.gold-border::before { background: var(--gold); }
+.metric-card.green-border::before { background: var(--green); }
+.metric-card.red-border::before { background: var(--red); }
+.metric-card.pink-border::before { background: var(--pink); }
+.metric-card h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.metric-card p {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+  transition: color 0.4s ease;
+}
+
+/* ── Animated trajectory SVG ── */
+.traj-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+.slide.active .traj-line {
+  animation: drawLine 2s ease forwards;
+}
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+.slide.active .dot-pulse {
+  animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { r: 5; opacity: 0.8; }
+  50% { r: 9; opacity: 1; }
+}
+
+/* Step reveal on key */
+.step-group { opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease; transform: translateY(10px); }
+.step-group.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Table ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(88,166,255,0.15);
+}
+td {
+  padding: 12px 16px;
+  color: var(--text-dim);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+tr:last-child td { border-bottom: none; }
+
+/* ── SVG Diagrams ── */
+svg text {
+  font-family: 'EB Garamond', serif;
+}
+
+/* ── Conclusion pill ── */
+.takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.takeaway .icon-circle {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  border: 1px solid;
+}
+.takeaway p { font-size: 1.15rem; line-height: 1.6; }
+</style>
+</head>
+<body class="light">
+
+<div class="progress-bar" id="progress"></div>
+<div id="stage">
+
+<!-- ╔═══════════�����══════════════════════════════════════════════��
+     ║  SLIDE 1 — TITLE                                        ║
+     ╚���═�����═���═���═���═══════���══════��═══════════════════════════════════╝ -->
+<div class="slide active" id="slide-1">
+  <canvas id="bg-canvas-1"></canvas>
+  <p class="anim dim" style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; letter-spacing:3px; margin-bottom:24px;">ICLR 2026</p>
+  <h1 class="anim d1 center" style="max-width:1000px; font-size:3.5rem;">
+    Characterizing human <span class="blue">semantic navigation</span><br>
+    as <span class="gold">trajectories</span> in embedding space
+  </h1>
+  <p class="anim d2 dim center" style="margin-top:32px; font-size:1.15rem;">
+    Felipe D. Toro-Hernández<sup style="font-size:0.65em; color:var(--gold);">1</sup> &nbsp;·&nbsp;
+    Jesuino Vieira Filho<sup style="font-size:0.65em; color:var(--gold);">2</sup> &nbsp;·&nbsp;
+    Rodrigo M. Cabral-Carvalho<sup style="font-size:0.65em; color:var(--gold);">1</sup>
+  </p>
+  <p class="anim d2 dim center" style="font-size:0.75rem; opacity:0.45; margin-top:4px; font-style:italic;">
+    All authors contributed equally
+  </p>
+  <div class="anim d3" style="margin-top:16px; text-align:center;">
+    <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.8;">
+      <sup style="font-size:0.7em; color:var(--gold);">1</sup> Center of Mathematics, Computing and Cognition · Federal University of ABC<br>
+      <sup style="font-size:0.7em; color:var(--gold);">2</sup> Dept. of Computer Science and Operations Research · Université de Montréal
+    </p>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 2 — THE PROBLEM                                  ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-2">
+  <canvas id="bg-canvas-2"></canvas>
+  <div class="max-w">
+    <span class="tag anim">The Problem</span>
+    <h2 class="anim d1" style="max-width:900px; margin-bottom:16px;">
+      Human <span class="blue">semantic navigation</span>: moving through concepts
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <div class="anim d2" style="flex:1.5;">
+        <div class="diagram" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide2-clusters.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+      <div style="flex:0.8; padding-top:10px;">
+        <p class="anim d3" style="margin-bottom:20px;">
+          Navigation through semantic representations is often characterized in terms of <em>clustering</em> and <em>switching</em>.
+        </p>
+        <p class="anim d4 dim" style="margin-bottom:20px;">
+          Usually, semantic pipelines are <span class="blue">labor-intensive</span>, heterogeneous, and hard to compare across studies.
+        </p>
+        <p class="anim d5 dim">
+          Furthermore, this often misses the <span class="blue">step-by-step granularity</span> — the continuous geometry of how meaning unfolds over time.
+        </p>
+        <div class="anim d6" style="margin-top:28px; padding:16px 20px; border:1px solid var(--callout-border); border-radius:12px; background:var(--callout-bg);">
+          <p style="font-size:1rem; color:var(--gold);">
+            → What if we framed semantic retrieval as a <strong>trajectory through geometric space</strong>?
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 3 — CUMULATIVE EMBEDDINGS                        ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-3">
+  <div class="max-w">
+    <span class="tag anim">Key Idea</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      <span class="gold">Cumulative</span> embeddings capture search history
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <div class="anim d2" style="flex:1.5;">
+        <div class="diagram" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide3-cumulative.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+      <div style="flex:0.7; padding-top:10px;">
+        <p class="anim d3" style="margin-bottom:16px; font-size:1.2rem; white-space:nowrap;">
+          Each word <span class="blue">x<sub>t</sub></span> encodes the <span class="blue">full prefix</span> up to step&nbsp;<em>t</em>.
+        </p>
+        <div class="metric-card anim d4" style="margin-bottom:20px;">
+          <p style="color:var(--text); font-size:1.05rem;">
+            Step 1: embed <span class="mono blue">"cat"</span><br>
+            Step 2: embed <span class="mono blue">"cat dog"</span><br>
+            Step 3: embed <span class="mono blue">"cat dog shark"</span><br>
+            &nbsp;&nbsp;⋮
+          </p>
+        </div>
+        <p class="anim d5 dim" style="margin-bottom:18px;">
+          This captures <span class="blue">dependencies</span> between successive items — semantic retrieval is inherently cumulative.
+        </p>
+        <p class="anim d6 dim">
+          Working memory and inhibitory control shape each response based on all previous ones.
+        </p>
+        <div class="anim d7" style="margin-top:24px; padding:14px 18px; border:1px solid var(--card-border); border-radius:10px; background:var(--surface);">
+          <p style="font-size:0.95rem;">
+            Result: a <span class="blue">trajectory</span> per participant × concept pair
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 4 — CUMULATIVE vs NON-CUMULATIVE (NEW)           ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-4">
+  <div class="max-w">
+    <span class="tag anim">Key Finding</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      <span class="blue">Cumulative</span> vs. <span class="red">non-cumulative</span>: trajectory length matters
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <!-- Left: animated diagram -->
+      <div class="anim d2" style="flex:1.5;">
+        <div class="diagram" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide4-cumul-vs-noncumul.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+      <!-- Right: explanation cards -->
+      <div style="flex:0.7; padding-top:10px;">
+        <div class="metric-card anim d3" style="border-left:3px solid var(--blue);">
+          <h4 class="blue">Cumulative → long sequences</h4>
+          <p>Longer trajectories provide rich context that cumulative embeddings leverage — <strong>more significant group differences</strong> and higher effect sizes.</p>
+        </div>
+        <div class="metric-card red-border anim d4">
+          <h4 class="red">Non-cumulative → short sequences</h4>
+          <p>With only ~5 items, there is <strong>too little context</strong> to accumulate. Point-to-point variation retains more discriminative signal.</p>
+        </div>
+        <div class="anim d5" style="margin-top:18px; padding:14px 18px; border:1px solid var(--callout-border); border-radius:10px; background:var(--callout-bg);">
+          <p style="font-size:0.92rem;">
+            <span class="gold">→</span> Both approaches are <em>complementary</em> — trajectory length determines which representation best exposes semantic structure.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 5 — METRICS (animated)                           ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-5">
+  <div class="max-w">
+    <span class="tag anim">Methods</span>
+    <h2 class="anim d1" style="margin-bottom:10px;">
+      Five <span class="gold">physics-inspired</span> trajectory metrics
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <!-- Left: LARGE animated diagram -->
+      <div class="anim d2" style="flex:1.6;">
+        <div class="diagram" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide5-metrics.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+
+      <!-- Right: compact metric descriptions -->
+      <div style="flex:0.7; display:flex; flex-direction:column; gap:4px; padding-top:0;">
+        <div class="metric-card red-border anim d3" style="margin-bottom:4px;">
+          <h4 class="red">① Distance to next</h4>
+          <p>Cosine distance between consecutive points. <strong>Semantic jump size</strong>.</p>
+        </div>
+        <div class="metric-card gold-border anim d4" style="margin-bottom:4px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h4 class="gold">② Velocity</h4>
+            <span class="math" style="font-size:0.85rem;">v<sub>t</sub> = x<sub>t+1</sub> − x<sub>t</sub></span>
+          </div>
+          <p>Direction + magnitude of each step.</p>
+        </div>
+        <div class="metric-card green-border anim d5" style="margin-bottom:4px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h4 class="green">③ Acceleration</h4>
+            <span class="math" style="font-size:0.85rem; color:var(--green); background:rgba(90,230,130,0.08);">a<sub>t</sub> = v<sub>t+1</sub> − v<sub>t</sub></span>
+          </div>
+          <p>Low → stable cluster. High → erratic switch.</p>
+        </div>
+        <div class="metric-card anim d6" style="margin-bottom:4px;">
+          <h4 class="blue">④ Entropy</h4>
+          <p>Shannon entropy of median-split steps. <strong>Predictability</strong> of the search.</p>
+        </div>
+        <div class="metric-card pink-border anim d7" style="margin-bottom:0;">
+          <h4 class="pink">⑤ Distance to centroid</h4>
+          <p>Distance to mean position of all items. <strong>Dispersion</strong> of the search.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 6 — DATASETS                                     ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-6">
+  <div class="max-w">
+    <span class="tag anim">Experimental Setup</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      Four datasets · Four languages · Two tasks
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <!-- Left: Visual dataset panels -->
+      <div style="flex:1.4; display:flex; flex-direction:column; gap:10px;">
+
+        <!-- Panel A: Neurodegenerative -->
+        <div class="metric-card anim d2" style="padding:16px 20px;">
+          <div style="display:flex; align-items:center; gap:18px;">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--blue); background:rgba(88,166,255,0.1); border:1px solid rgba(88,166,255,0.25); border-radius:6px; padding:2px 8px; flex-shrink:0;">A</div>
+            <div style="flex:1;">
+              <h4 class="blue" style="margin-bottom:4px;">Neurodegenerative</h4>
+              <p style="font-size:0.85rem;"><span style="color:var(--text-dim);">ES-CL 🇨🇱 · N=76 · Property Listing Task</span></p>
+            </div>
+            <div style="display:flex; gap:14px; align-items:center;">
+              <!-- Three group icons -->
+              <div style="text-align:center;">
+                <div style="font-size:1.6rem;">🧠</div>
+                <div style="font-size:0.65rem; color:var(--green); font-weight:600; margin-top:2px;">HC</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:1.6rem;">🔵</div>
+                <div style="font-size:0.65rem; color:var(--gold); font-weight:600; margin-top:2px;">PD</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:1.6rem;">🔴</div>
+                <div style="font-size:0.65rem; color:var(--red); font-weight:600; margin-top:2px;">bvFTD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel B: Swear Fluency -->
+        <div class="metric-card gold-border anim d3" style="padding:16px 20px;">
+          <div style="display:flex; align-items:center; gap:18px;">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--gold); background:rgba(232,197,71,0.1); border:1px solid rgba(232,197,71,0.25); border-radius:6px; padding:2px 8px; flex-shrink:0;">B</div>
+            <div style="flex:1;">
+              <h4 class="gold" style="margin-bottom:4px;">Swear Fluency</h4>
+              <p style="font-size:0.85rem;"><span style="color:var(--text-dim);">EN 🇺🇸 · N=274 · Verbal Fluency Task</span></p>
+            </div>
+            <div style="display:flex; gap:18px; align-items:center;">
+              <div style="text-align:center;">
+                <div style="font-size:1.6rem;">🤬</div>
+                <div style="font-size:0.65rem; color:var(--red); font-weight:600; margin-top:2px;">Swear</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:1.6rem;">🐾</div>
+                <div style="font-size:0.65rem; color:var(--green); font-weight:600; margin-top:2px;">Animals</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:1.6rem;">🔤</div>
+                <div style="font-size:0.65rem; color:var(--blue); font-weight:600; margin-top:2px;">Letters</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel C: Italian & German -->
+        <div class="metric-card green-border anim d4" style="padding:16px 20px;">
+          <div style="display:flex; align-items:center; gap:18px;">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--green); background:rgba(90,230,130,0.1); border:1px solid rgba(90,230,130,0.25); border-radius:6px; padding:2px 8px; flex-shrink:0;">C</div>
+            <div style="flex:1;">
+              <h4 class="green" style="margin-bottom:4px;">Cross-Linguistic PLT</h4>
+              <p style="font-size:0.85rem;"><span style="color:var(--text-dim);">Property Listing Task · 10 semantic categories</span></p>
+            </div>
+            <div style="display:flex; gap:20px; align-items:center;">
+              <div style="text-align:center; padding:6px 14px; border:1px solid rgba(90,230,130,0.2); border-radius:10px; background:rgba(90,230,130,0.04);">
+                <div style="font-size:1.3rem;">🇮🇹</div>
+                <div style="font-size:0.7rem; color:var(--text); font-weight:600; margin-top:2px;">Italian</div>
+                <div style="font-size:0.6rem; color:var(--text-dim);">N=69</div>
+              </div>
+              <div style="text-align:center; padding:6px 14px; border:1px solid rgba(224,122,255,0.2); border-radius:10px; background:rgba(224,122,255,0.04);">
+                <div style="font-size:1.3rem;">🇩🇪</div>
+                <div style="font-size:0.7rem; color:var(--text); font-weight:600; margin-top:2px;">German</div>
+                <div style="font-size:0.6rem; color:var(--text-dim);">N=73</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="anim d5 dim" style="font-size:0.88rem; margin-top:6px;">
+          Statistics: Generalized Linear Mixed Models (GLMMs) with Tukey HSD post-hoc correction.
+        </p>
+      </div>
+
+      <!-- Right: Embedding models + design -->
+      <div style="flex:0.6;">
+        <div class="anim d6" style="margin-bottom:16px;">
+          <div class="metric-card">
+            <h4 style="font-size:0.95rem;">Embedding models</h4>
+            <p style="color:var(--text);">
+              ● OpenAI text-embedding-3-large<br>
+              ● Google text-embedding-004<br>
+              ● Qwen3-Embedding-0.6B<br>
+              <span class="dim">● fastText (baseline, non-cumul.)</span>
+            </p>
+            <p style="font-size:0.78rem; color:var(--text-dim); margin-top:8px; font-style:italic; border-top:1px solid var(--card-border); padding-top:8px;">
+              All results reported with OpenAI unless otherwise noted.
+            </p>
+          </div>
+        </div>
+        <div class="anim d7">
+          <div class="metric-card">
+            <h4 style="font-size:0.95rem;">Design choices</h4>
+            <p>Causal and bidirectional attention<br>
+              Cumulative vs. non-cumulative comparison<br>
+              ZCA-whitening tested for anisotropy</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 7 — RESULTS: NEURODEGENERATIVE                   ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-7">
+  <div class="max-w">
+    <span class="tag anim">Results</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      Neurodegenerative patients show more <span class="red">erratic</span>, <span class="red">constricted</span> navigation
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <div class="anim d2" style="flex:1.5;">
+        <div class="diagram" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide7-neurodegenerative.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+      <div style="flex:0.7; padding-top:10px;">
+        <div class="metric-card red-border anim d3">
+          <h4 class="red">↑ Higher in patients</h4>
+          <p><strong>Distance to Next</strong> — larger semantic jumps<br>
+             <strong>Velocity</strong> — erratic movement<br>
+             <strong>Acceleration</strong> — abrupt direction changes<br>
+             <strong>Entropy</strong> — unpredictable search</p>
+        </div>
+        <div class="metric-card red-border anim d4">
+          <h4 class="red">↓ Lower in patients</h4>
+          <p><strong>Distance to Centroid</strong> — search confined to a tighter neighborhood despite being more volatile</p>
+        </div>
+        <div class="anim d5" style="margin-top:18px; padding:18px 22px; border:1px solid var(--callout-border); border-radius:12px; background:var(--callout-bg);">
+          <p style="font-size:1rem; line-height:1.7;">
+            Interpretation: a kinematic signature of executive dysfunction — volatile trajectories within a diminished semantic space.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 8 — RESULTS: SWEAR + CROSS-LINGUISTIC            ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-8">
+  <div class="max-w">
+    <span class="tag anim">Results</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      Swear words & semantic category structure
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <div style="flex:1.5;">
+        <div class="diagram anim d2" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide8-swear-category.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+      <div style="flex:0.7; padding-top:10px;">
+        <div class="metric-card green-border anim d3">
+          <h4 class="green">Animals</h4>
+          <p>Lowest kinematic values, highest centroid distance. Structured sub-categories (pets, farm, sea…) allow <strong>organized exploitation</strong>.</p>
+        </div>
+        <div class="metric-card red-border anim d4">
+          <h4 class="red">Swear Words</h4>
+          <p>Highest kinematic values across all metrics. Taboo lexicons lack sub-category structure → <strong>high variability in a compact space</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 8b — CROSS-LINGUISTIC                             ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-8b">
+  <div class="max-w">
+    <span class="tag anim">Results</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      Cross-linguistic structure: <span class="green">Italian</span> & <span class="pink">German</span>
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <div class="anim d2" style="flex:1.5;">
+        <div class="diagram" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide8b-cross-linguistic.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+      <div style="flex:0.7; padding-top:10px;">
+        <div class="metric-card green-border anim d3">
+          <h4 class="green">Italian (IT) · N=69</h4>
+          <p>10 categories · Property Listing Task. Bird is reference. Building and Vehicle <strong>least separated</strong>. Category effects <em>selective</em>, not uniform.</p>
+        </div>
+        <div class="metric-card pink-border anim d4">
+          <h4 class="pink">German (DE) · N=73</h4>
+          <p>Same 10 categories · Same protocol. Vehicle <strong>most distinct</strong> from Bird. Bird highest velocity &amp; acceleration. Fruit vs. tool-like categories show strongest centroid gaps.</p>
+        </div>
+        <div class="anim d5" style="margin-top:18px; padding:16px 20px; border:1px solid var(--callout-border); border-radius:12px; background:var(--callout-bg);">
+          <p style="font-size:1rem; line-height:1.7;">
+            <span class="gold">→</span> Same protocol, but different category effects — <em>cultural and linguistic structure</em> shapes how meaning is organized.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 9 — MODEL ROBUSTNESS                             ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-9">
+  <div class="max-w">
+    <span class="tag anim">Robustness</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      Different models, <span class="gold">convergent</span> geometry
+    </h2>
+    <div style="display:flex; gap:24px; align-items:stretch;">
+      <div class="anim d2" style="flex:1.5;">
+        <div class="diagram" style="width:100%; height:560px; display:flex; align-items:center; justify-content:center;">
+          <object data="../figures/slide9-model-robustness.svg" type="image/svg+xml" width="100%" height="100%"></object>
+        </div>
+      </div>
+      <div style="flex:0.7; padding-top:10px;">
+        <div class="metric-card green-border anim d3">
+          <h4 class="green">✓ Robust across models</h4>
+          <p><strong>Velocity, Acceleration, Dist-to-Next</strong> — high Pearson <em>r</em> across encoders. Local dynamics are <em>encoder-invariant</em>.</p>
+        </div>
+        <div class="metric-card anim d4">
+          <h4 class="blue">✓ Entropy: near-perfect</h4>
+          <p>Depends on <em>rank ordering</em>, not absolute distances. Median binarization absorbs differences.</p>
+        </div>
+        <div class="metric-card pink-border anim d5">
+          <h4 class="pink">⚠ Centroid: model-dependent</h4>
+          <p>Sensitive to each model's global geometry. Most pronounced in the neurodegenerative dataset.</p>
+        </div>
+        <div class="anim d6" style="margin-top:18px; padding:16px 20px; border:1px solid var(--callout-border); border-radius:12px; background:var(--callout-bg);">
+          <p style="font-size:0.95rem;">
+            <span class="gold">→</span> Models learn <em>similar local dynamics</em> despite different architectures (causal vs. bidirectional).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════╗
+     ║  SLIDE 10 — CONCLUSION                                  ║
+     ╚═══════════════════════════════════════════════════════════╝ -->
+<div class="slide" id="slide-10">
+  <div class="max-w center">
+    <span class="tag anim">Conclusion</span>
+    <h2 class="anim d1" style="margin-bottom:16px;">
+      Towards a <span class="gold">geometric framework</span> for human semantic navigation
+    </h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; text-align:left; max-width:1000px; margin:0 auto;">
+      <div class="anim d2">
+        <div class="takeaway">
+          <div class="icon-circle" style="border-color:var(--blue); color:var(--blue);">①</div>
+          <p><span class="blue">Cumulative trajectory metrics</span> build on traditional clustering/switching and capture fine-grained navigation dynamics.</p>
+        </div>
+      </div>
+      <div class="anim d3">
+        <div class="takeaway">
+          <div class="icon-circle" style="border-color:var(--gold); color:var(--gold);">②</div>
+          <p><span class="gold">Clinical utility</span> — extends existing evidence on semantic navigation signatures associated with neurocognitive dysfunction.</p>
+        </div>
+      </div>
+      <div class="anim d4">
+        <div class="takeaway">
+          <div class="icon-circle" style="border-color:var(--green); color:var(--green);">③</div>
+          <p><span class="green">Cross-linguistic & cross-category</span> — discriminates semantic categories and reveals language-specific organization.</p>
+        </div>
+      </div>
+      <div class="anim d5">
+        <div class="takeaway">
+          <div class="icon-circle" style="border-color:var(--pink); color:var(--pink);">④</div>
+          <p><span class="pink">Model-robust</span> — convergent results across three different embedding architectures for local dynamics.</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim d6" style="margin-top:20px; padding:14px 20px; border:1px solid var(--callout-border); border-radius:14px; background:var(--callout-bg); max-width:800px; display:inline-block;">
+      <p style="font-size:0.95rem; line-height:1.6; text-align:center;">
+        <span class="gold">Future:</span> temporal timestamps · more mathematically robust (potentially non-Euclidean) metrics
+      </p>
+    </div>
+  </div>
+  <!-- Footer strip -->
+  <div class="anim d7" style="position:absolute; bottom:50px; left:0; right:0; padding:0 40px;">
+    <div style="padding:16px 24px; display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.025); border-radius:14px; border:1px solid rgba(0,0,0,0.06); max-width:1000px; margin:0 auto;">
+      <div style="text-align:center; position:relative;">
+        <img src="../figures/qrcode-paper.jpeg" alt="Paper QR" style="width:60px; height:60px; border-radius:6px; border:1px solid var(--card-border);"/>
+        <p style="font-size:0.65rem; color:var(--text-dim); position:absolute; left:0; right:0; bottom:-14px;">Paper</p>
+      </div>
+      <img src="../figures/logo-ufabc.png" alt="UFABC" style="height:56px; vertical-align:middle;"/>
+      <img src="../figures/logo-iclr.png" alt="ICLR" style="height:56px; vertical-align:middle;"/>
+      <img src="../figures/logo-udem.png" alt="UdeM" style="height:56px; vertical-align:middle;"/>
+      <div style="text-align:center; position:relative;">
+        <img src="../figures/qrcode-github.jpeg" alt="GitHub QR" style="width:60px; height:60px; border-radius:6px; border:1px solid var(--card-border);"/>
+        <p style="font-size:0.65rem; color:var(--text-dim); position:absolute; left:0; right:0; bottom:-14px;">Code</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /stage -->
+
+<!-- ── Navigation Bar (outside stage so it's viewport-fixed) ── -->
+<div class="nav-bar">
+  <span class="counter" id="counter">1 / 11</span>
+  <div class="dots" id="dots"></div>
+  <span class="keys"></span>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+     ═══════════════════════════════════════════ -->
+<script>
+// Slide order: 1=Title, 2=Problem, 3=CumulEmbed, 5=Metrics, 6=Datasets, 7=Neuro, 8=Swear, 8b=CrossLing, 4=CumulVsNon, 9=Models, 10=Conclusion
+const slideOrder = ['slide-1','slide-2','slide-3','slide-5','slide-6','slide-7','slide-8','slide-8b','slide-4','slide-9','slide-10'];
+const total = slideOrder.length;
+let current = 1;
+
+// ── Theme toggle ──
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const btn = document.getElementById('themeToggle');
+  const isLight = document.body.classList.contains('light');
+  btn.textContent = isLight ? '☀️' : '🌙';
+  // Re-init canvas with correct colors
+  if (current === 1) initBgCanvas('bg-canvas-1');
+}
+
+// Build dots
+const dotsEl = document.getElementById('dots');
+for (let i = 1; i <= total; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 1 ? ' active' : '');
+  d.dataset.n = i;
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n) {
+  if (n < 1 || n > total) return;
+  const cur = document.getElementById(slideOrder[current - 1]);
+  cur.style.opacity = '0';
+  setTimeout(() => {
+    cur.classList.remove('active');
+    current = n;
+    const next = document.getElementById(slideOrder[current - 1]);
+    next.classList.add('active');
+    void next.offsetWidth;
+    next.style.opacity = '1';
+    updateUI();
+    if (current === 1) initBgCanvas('bg-canvas-1');
+  }, 250);
+}
+
+function updateUI() {
+  document.getElementById('counter').textContent = current + ' / ' + total;
+  document.getElementById('progress').style.width = ((current / total) * 100) + '%';
+  document.querySelectorAll('.dot').forEach(d => {
+    d.classList.toggle('active', +d.dataset.n === current);
+  });
+}
+
+function next() { goTo(current + 1); }
+function prev() { goTo(current - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+});
+
+// ── Background canvas: floating trajectory particles ──
+function initBgCanvas(id) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth * 2;
+  canvas.height = window.innerHeight * 2;
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+
+  const isLight = document.body.classList.contains('light');
+  const darkColors = ['#58a6ff', '#e8c547', '#5ae682', '#e07aff'];
+  const lightColors = ['#2563eb', '#b8941f', '#16a34a', '#9333ea'];
+  const palette = isLight ? lightColors : darkColors;
+  const lineAlpha = isLight ? 0.06 : 0.08;
+  const lineR = isLight ? 40 : 88;
+  const lineG = isLight ? 60 : 166;
+  const lineB = isLight ? 120 : 255;
+  const dotAlpha = isLight ? 0.35 : 0.5;
+
+  const pts = [];
+  const N = 80;
+  for (let i = 0; i < N; i++) {
+    pts.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.8,
+      r: Math.random() * 2 + 1,
+      color: palette[Math.floor(Math.random() * 4)]
+    });
+  }
+
+  let animId;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        const dx = pts[i].x - pts[j].x;
+        const dy = pts[i].y - pts[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(${lineR},${lineG},${lineB},${lineAlpha * (1 - dist / 200)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    for (const p of pts) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = dotAlpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    }
+
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── Scale stage to fit viewport ──
+let zoomOffset = 0;
+function scaleStage() {
+  const stage = document.getElementById('stage');
+  const sw = 1440, sh = 810;
+  const base = Math.min(window.innerWidth / sw, window.innerHeight / sh);
+  stage.style.transform = 'scale(' + (base + zoomOffset) + ')';
+}
+window.addEventListener('resize', scaleStage);
+document.addEventListener('keydown', function(e) {
+  if (e.key === '=' || e.key === '+') { zoomOffset += 0.05; scaleStage(); }
+  if (e.key === '-') { zoomOffset -= 0.05; scaleStage(); }
+  if (e.key === '0') { zoomOffset = 0; scaleStage(); }
+});
+scaleStage();
+
+// Init
+initBgCanvas('bg-canvas-1');
+updateUI();
+</script>
+
+</body>
+</html>

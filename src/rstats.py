@@ -4,8 +4,7 @@ from rpy2.robjects import conversion as cv
 from rpy2.robjects import pandas2ri
 
 # Ensure needed R packages are installed (quiet, no spam)
-ro.r(
-    """
+ro.r("""
     options(repos="https://cloud.r-project.org")
     ensure_pkgs <- function(pkgs) {
       to_install <- pkgs[!pkgs %in% rownames(installed.packages())]
@@ -16,8 +15,7 @@ ro.r(
     ensure_pkgs(c("glmmTMB","emmeans"))
     suppressPackageStartupMessages(library(glmmTMB))
     suppressPackageStartupMessages(library(emmeans))
-    """
-)
+    """)
 SEED = 42
 
 
@@ -42,8 +40,7 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
     ro.globalenv["family"] = family
 
     ro.r(f"set.seed({SEED})")
-    model = ro.r(
-        r"""
+    model = ro.r(r"""
         df <- df_py
         formula <- as.formula(formula_str)
         fam <- family
@@ -61,16 +58,14 @@ def glmm(df: pd.DataFrame, formula: str, family: str = "lognormal"):
         print(summary(glmm))
 
         glmm
-        """
-    )
+        """)
     return model
 
 
 def emmeans(effect: str = "category") -> pd.DataFrame:
     ro.globalenv["effect_str"] = effect
     ro.r(f"set.seed({SEED})")
-    r_df = ro.r(
-        r"""
+    r_df = ro.r(r"""
         # Sanity check
         if (!exists("glmm", envir = .GlobalEnv)) stop("`glmm` not found")
 
@@ -81,15 +76,13 @@ def emmeans(effect: str = "category") -> pd.DataFrame:
         # Keep emm on link but materialize output on response
         out <- as.data.frame(emm, type = "response")
         out
-        """
-    )
+        """)
     return _r_df_to_py(r_df)
 
 
 def pairs() -> pd.DataFrame:
     ro.r(f"set.seed({SEED})")
-    r_df = ro.r(
-        r"""
+    r_df = ro.r(r"""
         # Sanity check
         if (!exists("emm", envir = .GlobalEnv)) stop("`emm` not found")
 
@@ -100,6 +93,5 @@ def pairs() -> pd.DataFrame:
         cat(strrep("-", 70), "\n\n")
         print(pw)
         as.data.frame(pw)
-        """
-    )
+        """)
     return _r_df_to_py(r_df)
