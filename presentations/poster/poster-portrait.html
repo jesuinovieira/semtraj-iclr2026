@@ -30,7 +30,7 @@
 body {
   margin: 0; padding: 0;
   font-family: 'EB Garamond', 'Georgia', serif;
-  font-size: 1.15rem;
+  font-size: 1.45rem;
   line-height: 1.5;
   color: var(--text);
   background: #bbb;
@@ -70,23 +70,23 @@ header {
   border-bottom: 2px solid var(--card-border);
 }
 header h1 {
-  font-size: 4.8rem;
+  font-size: 5.6rem;
   line-height: 1.12;
   margin: 0 0 3mm 0;
   font-weight: 700;
 }
 .authors {
-  font-size: 1.5rem;
+  font-size: 1.9rem;
   color: var(--text-dim);
   margin-bottom: 1.5mm;
 }
 .affiliations {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   color: var(--text-dim);
   line-height: 1.7;
 }
 .equal-note {
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: var(--text-dim);
   opacity: 0.5;
   font-style: italic;
@@ -105,7 +105,7 @@ header h1 {
 
 /* ── SECTION HEADINGS ── */
 h2 {
-  font-size: 1.8rem;
+  font-size: 2.25rem;
   font-weight: 600;
   margin: 0;
   border-bottom: 2px solid var(--gold);
@@ -122,7 +122,7 @@ h2.full { display: block; }
 .pink { color: var(--pink); }
 em { font-style: italic; color: var(--blue); }
 .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
-.math { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; color: var(--gold); }
+.math { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; color: var(--gold); }
 
 /* ── METRIC CARDS ── */
 .metric-card {
@@ -147,13 +147,13 @@ em { font-style: italic; color: var(--blue); }
 .metric-card.red-border::before { background: var(--red); }
 .metric-card.pink-border::before { background: var(--pink); }
 .metric-card h4 {
-  font-size: 1.25rem;
+  font-size: 1.55rem;
   font-weight: 600;
   margin: 0 0 1.5mm 0;
 }
 .metric-card p {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1.45;
   color: var(--text-dim);
 }
@@ -164,7 +164,7 @@ em { font-style: italic; color: var(--blue); }
   border: 1px solid var(--callout-border);
   border-radius: 8px;
   background: var(--callout-bg);
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--gold);
   line-height: 1.45;
@@ -197,15 +197,15 @@ em { font-style: italic; color: var(--blue); }
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 .dataset-card .label {
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 700;
   border-radius: 4px;
   padding: 1px 7px;
   flex-shrink: 0;
   font-family: 'JetBrains Mono', monospace;
 }
-.dataset-card h4 { font-size: 1.1rem; font-weight: 600; margin: 0 0 0.5mm 0; }
-.dataset-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.35; margin: 0; }
+.dataset-card h4 { font-size: 1.4rem; font-weight: 600; margin: 0 0 0.5mm 0; }
+.dataset-card p { font-size: 1.05rem; color: var(--text-dim); line-height: 1.35; margin: 0; }
 
 /* ── INVERTED CONCLUSION CARD ── */
 .conclusion-card {
@@ -216,13 +216,13 @@ em { font-style: italic; color: var(--blue); }
 }
 .conclusion-card h4 {
   color: #fff;
-  font-size: 1.25rem;
+  font-size: 1.55rem;
   font-weight: 700;
   margin: 0 0 2mm 0;
 }
 .conclusion-card p {
   color: rgba(255,255,255,0.9);
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1.5;
   margin: 0;
 }
@@ -238,13 +238,13 @@ footer {
   border: 1px solid var(--card-border);
   border-radius: 10px;
 }
-footer img.logo { height: 12mm; }
+footer img.logo { height: 18mm; }
 footer .qr-block { text-align: center; }
 footer .qr-block img { width: 14mm; height: 14mm; border-radius: 4px; border: 1px solid var(--card-border); }
-footer .qr-block p { font-size: 0.7rem; color: var(--text-dim); margin-top: 1mm; }
+footer .qr-block p { font-size: 0.9rem; color: var(--text-dim); margin-top: 1mm; }
 footer .venue-badge {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--gold);
@@ -291,7 +291,7 @@ footer .venue-badge {
   <!-- ══════════ COLUMN 1: Motivation + Methods ══════════ -->
   <section class="col col1">
 
-    <h2 class="full">Human semantic navigation: moving through concepts</h2>
+    <h2 class="full">Semantic navigation: moving through concepts</h2>
     <div class="figure">
       <img src="../figures/slide2-clusters.svg" alt="Semantic clusters diagram">
     </div>
@@ -310,31 +310,33 @@ footer .venue-badge {
     <div class="figure">
       <img src="../figures/slide5-metrics.svg" alt="Five physics-inspired metrics">
     </div>
-    <div class="metric-card red-border">
-      <h4 class="red">① Distance to next</h4>
-      <p>Cosine distance between consecutive points. <span class="blue">Semantic jump size</span>.</p>
-    </div>
-    <div class="metric-card gold-border">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h4 class="gold">② Velocity</h4>
-        <span class="math" style="font-size:0.85rem;">v<sub>t</sub> = x<sub>t+1</sub> &minus; x<sub>t</sub></span>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:3mm;">
+      <div class="metric-card red-border">
+        <h4 class="red">① Distance to next</h4>
+        <p>Cosine distance between consecutive points. <span class="blue">Semantic jump size</span>.</p>
       </div>
-      <p>Direction + magnitude of each step.</p>
-    </div>
-    <div class="metric-card green-border">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h4 class="green">③ Acceleration</h4>
-        <span class="math" style="font-size:0.85rem;">a<sub>t</sub> = v<sub>t+1</sub> &minus; v<sub>t</sub></span>
+      <div class="metric-card green-border">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h4 class="green">③ Acceleration</h4>
+          <span class="math" style="font-size:1.05rem;">a<sub>t</sub> = v<sub>t+1</sub> &minus; v<sub>t</sub></span>
+        </div>
+        <p>Low &rarr; stable cluster.<br>High &rarr; erratic switch.</p>
       </div>
-      <p>Low &rarr; stable cluster. High &rarr; erratic switch.</p>
-    </div>
-    <div class="metric-card blue-border">
-      <h4 class="blue">④ Entropy</h4>
-      <p>Shannon entropy of median-split steps. <span class="blue">Predictability</span> of the search.</p>
-    </div>
-    <div class="metric-card pink-border">
-      <h4 class="pink">⑤ Distance to centroid</h4>
-      <p>Distance to mean position of all items. <span class="blue">Dispersion</span> of the search.</p>
+      <div class="metric-card gold-border">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h4 class="gold">② Velocity</h4>
+          <span class="math" style="font-size:1.05rem;">v<sub>t</sub> = x<sub>t+1</sub> &minus; x<sub>t</sub></span>
+        </div>
+        <p>Direction + magnitude of each step.</p>
+      </div>
+      <div class="metric-card blue-border">
+        <h4 class="blue">④ Entropy</h4>
+        <p>Shannon entropy of median-split steps. <span class="blue">Predictability</span> of the search.</p>
+      </div>
+      <div class="metric-card pink-border" style="grid-column: 1 / -1;">
+        <h4 class="pink">⑤ Distance to centroid</h4>
+        <p>Distance to mean position of all items. <span class="blue">Dispersion</span> of the search.</p>
+      </div>
     </div>
   </section>
 
@@ -368,7 +370,7 @@ footer .venue-badge {
       <div class="metric-card" style="flex:1;">
         <h4>Embedding models</h4>
         <p>● OpenAI text-embedding-3-large<br>● Google text-embedding-004<br>● Qwen3-Embedding-0.6B<br><span style="color:var(--text-dim);">● fastText (baseline, non-cumul.)</span></p>
-        <p style="font-size:0.8rem; color:var(--text-dim); margin-top:2mm; font-style:italic; border-top:1px solid var(--card-border); padding-top:2mm;">All results reported with OpenAI unless otherwise noted.</p>
+        <p style="font-size:1rem; color:var(--text-dim); margin-top:2mm; font-style:italic; border-top:1px solid var(--card-border); padding-top:2mm;">All results reported with OpenAI.</p>
       </div>
       <div class="metric-card" style="flex:1;">
         <h4>Design choices</h4>
@@ -376,16 +378,16 @@ footer .venue-badge {
       </div>
     </div>
 
-    <h2 class="full">Patients show more erratic, constricted trajectories</h2>
+    <h2 class="full">Patient trajectories: erratic yet constricted</h2>
     <div class="figure">
       <img src="../figures/slide7-neurodegenerative.svg" alt="Neurodegenerative boxplots">
     </div>
     <div style="display:flex; gap:3mm;">
       <div class="metric-card red-border" style="flex:1;">
         <h4 class="red">&uarr; Higher in patients</h4>
-        <p><strong>Distance to next</strong> — larger semantic jumps<br>
+        <p><strong>Dist. to next</strong> — larger semantic jumps<br>
            <strong>Velocity</strong> — erratic movement<br>
-           <strong>Acceleration</strong> — abrupt direction changes<br>
+           <strong>Acc.</strong> — abrupt direction changes<br>
            <strong>Entropy</strong> — unpredictable search</p>
       </div>
       <div class="metric-card red-border" style="flex:1;">
@@ -394,7 +396,7 @@ footer .venue-badge {
       </div>
     </div>
     <div class="callout">
-      A kinematic signature of executive dysfunction — volatile yet constricted trajectories.
+      A kinematic signature of executive dysfunction — patients navigate semantic space with volatile, erratic steps yet remain confined to a narrow neighborhood.
     </div>
 
     <h2 class="full">Category structure shapes semantic kinematics</h2>
@@ -417,7 +419,7 @@ footer .venue-badge {
   <!-- ══════════ COLUMN 3: Cross-Ling + Cumul vs Non-Cumul + Robustness + Conclusion ══════════ -->
   <section class="col col3">
 
-    <h2 class="full">Language and culture shape semantic organization</h2>
+    <h2 class="full">Language/culture shape semantic organization</h2>
     <div class="figure">
       <img src="../figures/slide8b-cross-linguistic.svg" alt="Italian vs German">
     </div>
@@ -432,7 +434,7 @@ footer .venue-badge {
       </div>
     </div>
     <div class="callout">
-      Same protocol, different category effects – cultural and linguistic structure shapes organization.
+      Same protocol, different effects; cultural/linguistic structure shapes organization.
     </div>
 
     <h2 class="full">Cumulative wins for long sequences</h2>
@@ -441,34 +443,34 @@ footer .venue-badge {
     </div>
     <div style="display:flex; gap:3mm;">
       <div class="metric-card blue-border" style="flex:1;">
-        <h4 class="blue">Cumulative &rarr; long sequences</h4>
-        <p>Longer trajectories provide rich context — <strong>more significant group differences</strong> with higher effect sizes across all metrics.</p>
+        <h4 class="blue">Cum. &rarr; long sequences</h4>
+        <p>Longer trajectories provide rich context: <strong>more significant group differences</strong> with higher effect sizes.</p>
       </div>
       <div class="metric-card red-border" style="flex:1;">
-        <h4 class="red">Non-cumulative &rarr; short sequences</h4>
-        <p>With only ~5 items, there is <strong>too little context</strong> to accumulate. Point-to-point variation retains more discriminative signal.</p>
+        <h4 class="red">Non-cum. &rarr; short sequences</h4>
+        <p>With ~5 items, there is <strong>little context</strong> to accumulate. Point-to-point variation retains more discriminative signal.</p>
       </div>
     </div>
     <div class="callout">
-      Complementary approaches — trajectory length determines which best exposes semantic structure.
+      Trajectory length determines which best exposes semantic structure.
     </div>
 
     <h2 class="full">Different models, convergent geometry</h2>
     <div class="figure">
-      <img src="../figures/slide9-model-robustness.svg" alt="Cross-model robustness">
+      <img src="../figures/slide9-model-robustness-compact.svg" alt="Cross-model robustness">
     </div>
 
-    <h2 class="full">Towards a geometric framework for semantic navigation</h2>
+    <h2 class="full">Towards a framework for semantic navigation</h2>
     <div class="conclusion-card">
       <p>
-        <strong>1.</strong> Cumulative metrics build on clustering/switching, capturing fine-grained dynamics<br>
+        <strong>1.</strong> Cumulative metrics extend clustering/switching with fine-grained dynamics<br>
         <strong>2.</strong> Clinical utility — kinematic signatures of neurocognitive dysfunction<br>
         <strong>3.</strong> Discriminates categories &amp; reveals language-specific organization<br>
         <strong>4.</strong> Model-robust — local kinematics converge across embedding architectures
       </p>
     </div>
     <div class="callout">
-      <strong>Future:</strong> temporal timestamps &middot; more mathematically robust (potentially non-Euclidean) metrics
+      <strong>Future:</strong> temporal timestamps &middot; more mathematically robust metrics
     </div>
   </section>
 
