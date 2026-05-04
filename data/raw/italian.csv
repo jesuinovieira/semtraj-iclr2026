@@ -1406,7 +1406,7 @@ num,id,concept_en,category,concept,property
 1405,s86,ship,vehicle,nave,naviga nel mare
 1406,s86,ship,vehicle,nave,per tutto il mondo
 1407,s86,dog,mammal,cane,goa
-1408,s86,dog,mammal,cane,animale 
+1408,s86,dog,mammal,cane,animale
 1409,s86,dog,mammal,cane,domestico
 1410,s86,dog,mammal,cane,di compagnia
 1411,s86,dog,mammal,cane,amico dell'uomo
@@ -1674,7 +1674,7 @@ num,id,concept_en,category,concept,property
 1673,s88,bed,furniture,letto,adibito a dormire
 1674,s88,bed,furniture,letto,è formato dal materasso
 1675,s88,bed,furniture,letto,è formato da una struttura che lo sorregge
-1676,s88,bed,furniture,letto,ci si corica 
+1676,s88,bed,furniture,letto,ci si corica
 1677,s88,bed,furniture,letto,la notte
 1678,s88,bed,furniture,letto,quando si sta male
 1679,s88,bed,furniture,letto,quando si è stanchi
@@ -1831,7 +1831,7 @@ num,id,concept_en,category,concept,property
 1830,s89,chair,furniture,sedia,alla cattedra ce n'è una sola
 1831,s89,chair,furniture,sedia,spera di non spaccarla quando sei ospite
 1832,s89,chair,furniture,sedia,impilabile
-1833,s89,garage,building,garage,posto 
+1833,s89,garage,building,garage,posto
 1834,s89,garage,building,garage,posto coperto
 1835,s89,garage,building,garage,per la macchina
 1836,s89,garage,building,garage,ci si possono tenere attrezzi vari
@@ -2507,7 +2507,7 @@ num,id,concept_en,category,concept,property
 2506,s95,broom,implement,scopa,è composto da un manico
 2507,s95,broom,implement,scopa,è composto da un insieme di crini
 2508,s95,broom,implement,scopa,utilizzata dalle streghe per volare
-2509,s95,broom,implement,scopa,utilizzata con una paletta 
+2509,s95,broom,implement,scopa,utilizzata con una paletta
 2510,s95,socks,clothing,calzini,oggetto di abbigliamento
 2511,s95,socks,clothing,calzini,si indossano ai piedi
 2512,s95,socks,clothing,calzini,di varie stoffe

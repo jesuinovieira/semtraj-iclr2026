@@ -199,3 +199,4 @@ presentations/slides/SLIDES.md
 presentations/**/node_modules/
 presentations/**/presentation.zip
 presentations/**/presentation.pdf
+data/raw/parkinson.csv

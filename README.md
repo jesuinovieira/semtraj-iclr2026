@@ -14,6 +14,8 @@ Follow these steps to prepare your data, set up the environment, and configure t
 
 Place your files in the `data/raw` folder. If your data is in `.xlsx` format, run the `data/raw/tocsv.py` script to convert them to `.csv`.
 
+> **Note:** The Parkinson dataset was obtained from Toro-Hernández et al., [*Neurocognitive correlates of semantic memory navigation in Parkinson's disease*](https://www.nature.com/articles/s41531-024-00630-4), *npj Parkinson's Disease* (2024).
+
 ## 2. Set Up the Environment
 
 ```bash
