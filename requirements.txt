@@ -18,3 +18,4 @@ statannotations==0.7.*
 statsmodels==0.14.*
 torch==2.7.*
 tqdm
+transformers==4.*

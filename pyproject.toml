@@ -7,7 +7,7 @@ max-complexity = 10
 exclude = ['.venv*', '*.tox']
 extend-ignore = ['W503']
 
-[tool.pytest]
+[tool.pytest.ini_options]
 pythonpath = "src"
 testpaths = "tests"
 

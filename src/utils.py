@@ -49,11 +49,11 @@ def cumulative_concat(properties: pd.Series) -> list[str]:
 
 
 def get_lang_from_filename(filename: str) -> str:
-    if "Italian" in filename:
+    if "italian" in filename.lower():
         return "it"
-    if "German" in filename:
+    if "german" in filename.lower():
         return "de"
-    if "Parkinson" in filename:
+    if "parkinson" in filename.lower():
         return "es"
 
     return "en"
