@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Toro-Hernández"
+    given-names: "Felipe Diego"
+    affiliation: "Federal University of ABC"
+  - family-names: "Vieira Filho"
+    given-names: "Jesuino"
+    affiliation: "Université de Montréal"
+  - family-names: "Cabral-Carvalho"
+    given-names: "Rodrigo M."
+    affiliation: "Federal University of ABC"
+title: "Characterizing human semantic navigation in concept production as trajectories in embedding space"
+repository-code: "https://github.com/jesuinovieira/nlp-semantic"
+url: "https://rodrigo-motta.github.io/semtraj-iclr2026-page/"
+preferred-citation:
+  type: conference-paper
+  authors:
+    - family-names: "Toro-Hernández"
+      given-names: "Felipe Diego"
+    - family-names: "Vieira Filho"
+      given-names: "Jesuino"
+    - family-names: "Cabral-Carvalho"
+      given-names: "Rodrigo M."
+  title: "Characterizing human semantic navigation in concept production as trajectories in embedding space"
+  collection-title: "The Fourteenth International Conference on Learning Representations"
+  year: 2026
+  url: "https://iclr.cc/virtual/2026/poster/10009590"

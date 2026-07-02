@@ -75,10 +75,10 @@ Executed notebooks land in `notebooks/executed/`.
 ```bibtex
 @inproceedings{
     toro-hernandez2026characterizing,
-    title={Characterizing Human Semantic Navigation in Concept Production as Trajectories in Embedding Space},
+    title={Characterizing human semantic navigation in concept production as trajectories in embedding space},
     author={Felipe Diego Toro-Hern{\'a}ndez and Jesuino Vieira Filho and Rodrigo M. Cabral-Carvalho},
     booktitle={The Fourteenth International Conference on Learning Representations},
     year={2026},
-    url={https://openreview.net/forum?id=QQVmIR97sf}
+    url={https://iclr.cc/virtual/2026/poster/10009590}
 }
 ```
